@@ -1,0 +1,3 @@
+/!\ As github does not allow the use of javascript in README.md, I recommend reading the interactive version of the tutorial [here](link_to_website). /!\
+
+This is a tutorial will guide you for making your first game with pixijs. It is intended for people never having made a game, but that have some basics in programming. The objective is to give you essential/key notions about game programming, so that you are able to make your own game afterward.
