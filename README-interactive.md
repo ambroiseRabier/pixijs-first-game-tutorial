@@ -8,11 +8,12 @@ Each step is tagged, click on the title to get to the state of the code at start
 
 [TOC]
 
+
 ## 0. Setup project
 <div class="teacher-note">
 
 What the student should be able to do afterward:
-- Setup a project from zero.
+- Setup a project from zero with npm, git, pixiJS, typescript.
 
 What student should understand:
 - What canvas and WebGL API is, what is better.
@@ -53,15 +54,37 @@ What student will do:
 </div>
 
 <div class="reference">
-  [0]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas
-  [1]: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API
-  [2]: https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API
-  [3]: https://stackoverflow.com/questions/21603350/is-there-any-reason-for-using-webgl-instead-of-2d-canvas-for-2d-games-apps
-  [4]: https://github.com/pixijs/pixi.js
+[0]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas
+[1]: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API
+[2]: https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API
+[3]: https://stackoverflow.com/questions/21603350/is-there-any-reason-for-using-webgl-instead-of-2d-canvas-for-2d-games-apps
+[4]: https://github.com/pixijs/pixi.js
 </div>
 
 <div class="do">
-  
+
+```sh
+cd pixijs-first-game/
+git init
+npm init
+npm i --save pixi.js typescript
+touch .gitignore
+
+# .idea folder should be ignored by git, if you are using Webstorm IDE
+echo .idea/ >> .gitignore
+echo node_modules/ >> .gitignore
+
+# create tsconfig.json
+tsc --init
+
+```
+
+</div>
+
+<div class="explanation">
+
+You could use a [CDN][https://github.com/pixijs/pixi.js?utm_source=html5weekly#cdn-install-via-cdnjs] instead of npm, and not use typescript at all.
+
 </div>
 
 

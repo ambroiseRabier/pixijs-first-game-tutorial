@@ -1,0 +1,15 @@
+{
+  "name": "pixijs-first-game-tutorial",
+  "version": "1.0.0",
+  "description": "PixiJS first game tutorial.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ambroise Rabier",
+  "license": "ISC",
+  "dependencies": {
+    "pixi.js": "^5.2.0",
+    "typescript": "^3.7.4"
+  }
+}
