@@ -154,31 +154,62 @@ src/index.html
   <title>Title</title>
 </head>
 <body>
-    <script src="index.js" type="module"></script>
+    <script src="bundle.js" type="module"></script>
 </body>
 </html>
 ```
 
 src/index.ts
 ```ts
+import * as PIXI from 'pixi.js';
+
 console.log(PIXI);
 ```
+</div>
 
-Install `cpx` package, it work like `cp` command but independently from platform:
+<div class="explanation">
+To allow us to leverage npm package, we need a javascript bundler. We will be using webpack.
+</div>
+
+<div class="do">
+
+webpack.config.js
+```js
+module.exports = {
+  mode: "development",
+  devtool: "inline-source-map",
+  entry: "./src/index.ts",
+  output: {
+    filename: "bundle.js"
+  },
+  resolve: {
+    // Add `.ts` and `.tsx` as a resolvable extension.
+    extensions: [".ts", ".tsx", ".js"]
+  },
+  module: {
+    rules: [
+      // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
+      { test: /\.tsx?$/, loader: "ts-loader" }
+    ]
+  }
+};
+```
+@See https://github.com/TypeStrong/ts-loader#configuration
+
+
 ```sh
-npm i --save cpx
+npm i -D ts-loader webpack webpack-cli
 ```
 
 You can add a npm script in `package.json` to build:
 ```json
 {
   "scripts": {
-    "build": "tsc && cpx src/index.html dist/",
+    "build": "webpack"
   }
 }
 ```
 
-Note that it doesn't delete any files before rebuilding, so if you wanted to keep using this command you should delete the content of the dist folder before building. We are going to use something else later anyway.
 
 </div>
 
