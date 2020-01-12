@@ -1,2 +1,3 @@
-console.log('hi');
-console.log('hi');
+import * as PIXI from 'pixi.js';
+
+console.log(PIXI);

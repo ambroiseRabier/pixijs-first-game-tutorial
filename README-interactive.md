@@ -64,7 +64,26 @@ What student will do:
 [4]: https://github.com/pixijs/pixi.js
 </div>
 
-### 0.1 CDN install
+<div class="do">
+
+It is recommended you skip the following part and download the project from the start of next step:
+
+```sh
+git clone --branch <tag_name> <repo_url> (todo)
+```
+
+[Skip to next Step][todo_link_to_next step]
+
+<div>
+
+
+### 0.1 (one file) CDN install
+
+<div class="explanation">
+
+You can use a [CDN][https://github.com/pixijs/pixi.js?utm_source=html5weekly#cdn-install-via-cdnjs] install instead of npm and typescript. It is good to know it can be as simple as that.
+
+</div>
 
 <div class="do">
 
@@ -78,17 +97,17 @@ src/index.html
 </head>
 <body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.3/pixi.min.js"></script>
-  <script src="dist/index.js"></script>
+  <script>
+    console.log(PIXI);
+  </script>
 </body>
 </html>
 ```
 
-src/index.js
-```js
-console.log(PIXI);
-```
-
 </div>
+
+
+### 0.2 Npm/ts install
 
 <div class="do">
 
@@ -106,6 +125,10 @@ echo dist/ >> .gitignore
 
 # create tsconfig.json
 tsc --init
+
+mkdir src
+touch src/index.html
+touch src/index.ts
 ```
 
 Change your tsconfig.json so that you have:
@@ -115,17 +138,47 @@ Change your tsconfig.json so that you have:
 
 <div class="explanation">
 
-You could use a [CDN][https://github.com/pixijs/pixi.js?utm_source=html5weekly#cdn-install-via-cdnjs] instead of npm, and not use typescript at all.
-
-I won't explain the typescript configuration, too long and complicated and not the purpose here.
+I won't explain the typescript configuration, too long and complicated and not the purpose here. (or maybe yes: todo)
 
 </div>
 
 <div class="do">
 
-Create `src` directory.
-Create `index.ts` file into it.
-Open a terminal and type `tsc -w`.
+
+src/index.html
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+    <script src="index.js" type="module"></script>
+</body>
+</html>
+```
+
+src/index.ts
+```ts
+console.log(PIXI);
+```
+
+Install `cpx` package, it work like `cp` command but independently from platform:
+```sh
+npm i --save cpx
+```
+
+You can add a npm script in `package.json` to build:
+```json
+{
+  "scripts": {
+    "build": "tsc && cpx src/index.html dist/",
+  }
+}
+```
+
+Note that it doesn't delete any files before rebuilding, so if you wanted to keep using this command you should delete the content of the dist folder before building. We are going to use something else later anyway.
 
 </div>
 

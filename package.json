@@ -4,12 +4,19 @@
   "description": "PixiJS first game tutorial.",
   "main": "index.js",
   "scripts": {
+    "start": "http-server dist/",
+    "build": "tsc && cpx src/index.html dist/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Ambroise Rabier",
   "license": "ISC",
   "dependencies": {
-    "pixi.js": "^5.2.0",
-    "typescript": "^3.7.4"
+    "pixi.js": "^5.2.0"
+  },
+  "devDependencies": {
+    "cpx": "^1.5.0",
+    "http-server": "^0.12.1",
+    "typescript": "^3.7.4",
+    "webpack": "^4.41.5"
   }
 }
