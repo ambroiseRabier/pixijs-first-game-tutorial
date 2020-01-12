@@ -4,7 +4,7 @@
   "description": "PixiJS first game tutorial.",
   "main": "index.js",
   "scripts": {
-    "start": "http-server dist/",
+    "start": "webpack-dev-server",
     "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,11 +14,11 @@
     "pixi.js": "^5.2.0"
   },
   "devDependencies": {
-    "cpx": "^1.5.0",
-    "http-server": "^0.12.1",
+    "file-loader": "^5.0.2",
     "ts-loader": "^6.2.1",
     "typescript": "^3.7.4",
     "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10"
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.1"
   }
 }

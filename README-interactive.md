@@ -195,24 +195,58 @@ module.exports = {
 };
 ```
 @See https://github.com/TypeStrong/ts-loader#configuration
-
+@See https://webpack.js.org/guides/getting-started/
 
 ```sh
-npm i -D ts-loader webpack webpack-cli
+npm i -D ts-loader webpack webpack-cli webpack-dev-server
 ```
 
 You can add a npm script in `package.json` to build:
 ```json
 {
   "scripts": {
-    "build": "webpack"
+      "start": "webpack-dev-server",
+      "build": "webpack"
   }
 }
 ```
 
+This will create a server watching your file and live reloading your webpage on change.
+```sh
+npm run start
+```
 
+You can build, but if you wanna test the build, you will need an http server (to avoid CORS). If you use Webstorm, you can right click `dist/index.html` then run. Another possibility is to use `http-server` package, but even with that, it only worked on chrome and not Firefox.
+```sh
+npm run build
+```
+
+
+@See https://github.com/webpack/webpack-dev-server
+@See https://webpack.js.org/configuration/dev-server/#devserver
 </div>
 
+<div>
+
+do `npm i -D file-loader`
+
+in index.ts add `import './index.html';`, so that it is added by webpack in dist.
+
+add in webpack config:
+
+```js
+      {
+        test: /\.html/,
+        loader: 'file-loader',
+        options: {
+          name: '[name].[ext]',
+        }
+      },
+```
+
+go onto http://localhost:8080/
+
+</div>
 
 
 ## 1. Setup scene
