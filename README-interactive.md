@@ -4,9 +4,12 @@ This is a tutorial will guide you for making your first game with [pixijs][https
 
 Each step is tagged, click on the title to get to the state of the code at start of this step.
 
+
+
 # Summary
 
 [TOC]
+
 
 
 ## 0. Setup project
@@ -61,6 +64,32 @@ What student will do:
 [4]: https://github.com/pixijs/pixi.js
 </div>
 
+### 0.1 CDN install
+
+<div class="do">
+
+src/index.html
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.3/pixi.min.js"></script>
+  <script src="dist/index.js"></script>
+</body>
+</html>
+```
+
+src/index.js
+```js
+console.log(PIXI);
+```
+
+</div>
+
 <div class="do">
 
 ```sh
@@ -73,19 +102,33 @@ touch .gitignore
 # .idea folder should be ignored by git, if you are using Webstorm IDE
 echo .idea/ >> .gitignore
 echo node_modules/ >> .gitignore
+echo dist/ >> .gitignore
 
 # create tsconfig.json
 tsc --init
-
 ```
 
+Change your tsconfig.json so that you have:
+```json
+```
 </div>
 
 <div class="explanation">
 
 You could use a [CDN][https://github.com/pixijs/pixi.js?utm_source=html5weekly#cdn-install-via-cdnjs] instead of npm, and not use typescript at all.
 
+I won't explain the typescript configuration, too long and complicated and not the purpose here.
+
 </div>
+
+<div class="do">
+
+Create `src` directory.
+Create `index.ts` file into it.
+Open a terminal and type `tsc -w`.
+
+</div>
+
 
 
 ## 1. Setup scene
