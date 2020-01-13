@@ -244,7 +244,8 @@ add in webpack config:
       },
 ```
 
-go onto http://localhost:8080/
+go onto http://localhost:8080/, add a console log, verify that the new console log is displayed.
+verify that you can build and start without errors.
 
 </div>
 
