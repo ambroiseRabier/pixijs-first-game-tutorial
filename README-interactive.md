@@ -1,9 +1,68 @@
+<style>
+.explanation {
+    color: red;
+}
+
+.teacher {
+  background-color: #c49816;
+}
+
+</style>
+
+<script>
+  function docReady(fn) {
+    // see if DOM is already available
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+        // call on next available tick
+        setTimeout(fn, 1);
+    } else {
+        document.addEventListener("DOMContentLoaded", fn);
+    }
+}
+
+docReady(() => {
+  const array = Array.from(document.querySelectorAll('.explanation'));
+  array.forEach(e => e.addEventListener('click', () => {console.log(123)}));
+
+  const teacher = document.querySelector('#teacher');
+  teacher.addEventListener('change', e => console.log(e.target.checked));
+});
+</script>
+
 # Introduction
 
-This is a tutorial will guide you for making your first game with [pixijs][https://github.com/pixijs/pixi.js]. It is intended for people never having made a game, but that have some basics in programming. The objective is to give you essential/key notions about game programming, so that you are able to make your own game afterward.
+This is a tutorial will guide you for making your first game with [pixijs](https://github.com/pixijs/pixi.js). It is intended for people never having made a game, but that have some basics in programming. The objective is to give you essential/key notions about game programming, so that you are able to make your own game afterward.
 
 Each step is tagged, click on the title to get to the state of the code at start of this step.
 
+## Choose your reading style
+
+### I am:
+<div>
+  <input type="radio" name="Iam" id="student" checked>
+  <label for="student">Student</label>
+
+  <input type="radio" name="Iam" id="teacher">
+  <label for="teacher">Teacher (additionnal content relevant for teaching)</label>
+</div>
+
+### Explanation quantity:
+<div>
+  <input type="radio" name="learning-style" id="studying" checked>
+  <label for="studying">I want as much **theory and explanations** as possible. (**recommended**, more **verbose**, good if you have time, and are interested as much in doing that in **understanding**)</label>
+
+  <input type="radio" name="learning-style" id="working">
+  <label for="working">I want to make it work **fast**. The less explanations there is, the better.</label>
+</div>
+
+### Coding simplicity/quality balance:
+<div>
+  <input type="radio" name="balance" id="quality" checked>
+  <label for="quality">I want my code to favor best pratices. (**recommended**) (**webpack, typescript, npm**)</label>
+
+  <input type="radio" name="balance" id="simplicity">
+  <label for="simplicity">I want to keep my code as simple as possible. (**CDN install, pure JS**)</label>
+</div>
 
 
 # Summary
@@ -13,7 +72,8 @@ Each step is tagged, click on the title to get to the state of the code at start
 
 
 ## 0. Setup project
-<div class="teacher-note">
+
+<div class="teacher-note" markdown>
 
 What the student should be able to do afterward:
 - Setup a project from zero with npm, git, pixiJS, typescript.
@@ -30,7 +90,7 @@ What student will do:
 
 </div>
 
-<div class="explanation">
+<div class="explanation" markdown>
 
 [Canvas HTML tag][0]: 
   - Use the HTML canvas element with either the `<canvas>` scripting API or the WebGL API to draw graphics and animations.
@@ -56,7 +116,7 @@ What student will do:
 
 </div>
 
-<div class="reference">
+<div class="reference" markdown>
 [0]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas
 [1]: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API
 [2]: https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API
@@ -64,7 +124,7 @@ What student will do:
 [4]: https://github.com/pixijs/pixi.js
 </div>
 
-<div class="do">
+<div class="do" markdown>
 
 It is recommended you skip the following part and download the project from the start of next step:
 
@@ -72,20 +132,20 @@ It is recommended you skip the following part and download the project from the 
 git clone --branch <tag_name> <repo_url> (todo)
 ```
 
-[Skip to next Step][todo_link_to_next step]
+[Skip to next Step](todo_link_to_next_step)
 
-<div>
+</div>
 
 
 ### 0.1 (one file) CDN install
 
-<div class="explanation">
+<div class="explanation" markdown>
 
 You can use a [CDN][https://github.com/pixijs/pixi.js?utm_source=html5weekly#cdn-install-via-cdnjs] install instead of npm and typescript. It is good to know it can be as simple as that.
 
 </div>
 
-<div class="do">
+<div class="do" markdown>
 
 src/index.html
 ```html
@@ -109,7 +169,7 @@ src/index.html
 
 ### 0.2 Npm/ts install
 
-<div class="do">
+<div class="do" markdown>
 
 ```sh
 cd pixijs-first-game/
@@ -136,13 +196,13 @@ Change your tsconfig.json so that you have:
 ```
 </div>
 
-<div class="explanation">
+<div class="explanation" markdown>
 
 I won't explain the typescript configuration, too long and complicated and not the purpose here. (or maybe yes: todo)
 
 </div>
 
-<div class="do">
+<div class="do" markdown>
 
 
 src/index.html
@@ -167,11 +227,11 @@ console.log(PIXI);
 ```
 </div>
 
-<div class="explanation">
+<div class="explanation" markdown>
 To allow us to leverage npm package, we need a javascript bundler. We will be using webpack.
 </div>
 
-<div class="do">
+<div class="do" markdown>
 
 webpack.config.js
 ```js
@@ -226,7 +286,7 @@ npm run build
 @See https://webpack.js.org/configuration/dev-server/#devserver
 </div>
 
-<div>
+<div markdown>
 
 do `npm i -D file-loader`
 
@@ -251,7 +311,7 @@ verify that you can build and start without errors.
 
 
 ## 1. Setup scene
-<div class="teacher-note">
+<div class="teacher-note" markdown>
 
 What the student should be able to do afterward:
 - Write basic scene setup with pxiJS (few lines).
@@ -267,7 +327,7 @@ What student will do:
 
 
 ## 2. Display a sprite
-<div class="teacher-note">
+<div class="teacher-note" markdown>
   KnowHowTo:
   - Create a sprite from an image.
   - Add a sprite on the scene.
@@ -283,15 +343,14 @@ What student will do:
 
 </div>
 
-<div class="explanation">
+<div class="explanation" markdown>
   Sprite: todo: show the inheritance shema, the base object is some kind of transform like in unity. sprite have some method in bonus. It is used to display a visual (spritesheet too right?).
 </div>
 
 
 ## 3. Move sprite once
-<div class="teacher-note">
+<div class="teacher-note" markdown>
   Do:
   - Modify a sprite state.
   - Re-render the scene.
 </div>
-##
