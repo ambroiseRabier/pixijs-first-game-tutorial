@@ -1,11 +1,22 @@
 <style>
+/* Studying vs Working */
 .explanation {
-    color: red;
+  color: red;
+}
+.action {
+  color: red;
 }
 
+/* Only appear to the teacher */
 .teacher {
   background-color: #c49816;
 }
+
+/* Tags */
+.vocabulary {
+
+}
+
 
 </style>
 
@@ -37,32 +48,34 @@ Each step is tagged, click on the title to get to the state of the code at start
 
 ## Choose your reading style
 
-### I am:
-<div>
+<fieldset>
+  <legend>I am</legend>
+
   <input type="radio" name="Iam" id="student" checked>
-  <label for="student">Student</label>
+  <label for="student">Student</label><br/>
 
   <input type="radio" name="Iam" id="teacher">
-  <label for="teacher">Teacher (additionnal content relevant for teaching)</label>
-</div>
+  <label for="teacher">Teacher (additionnal content, relevant for teaching this learning material)</label>
+</fieldset>
 
-### Explanation quantity:
-<div>
+<fieldset>
+  <legend>Explanation quantity</legend>
+<b></b>
   <input type="radio" name="learning-style" id="studying" checked>
-  <label for="studying">I want as much **theory and explanations** as possible. (**recommended**, more **verbose**, good if you have time, and are interested as much in doing that in **understanding**)</label>
+  <label for="studying">I want all available explanations, I like to understand everything. (<b>recommended</b>, <b>verbose</b>)</label><br/>
 
   <input type="radio" name="learning-style" id="working">
-  <label for="working">I want to make it work **fast**. The less explanations there is, the better.</label>
-</div>
+  <label for="working">I want to make it work <b>fast</b>. The less explanations there is, the better.</label>
+</fieldset>
 
-### Coding simplicity/quality balance:
-<div>
+<fieldset>
+  <legend>Coding simplicity/quality balance</legend>
   <input type="radio" name="balance" id="quality" checked>
-  <label for="quality">I want my code to favor best pratices. (**recommended**) (**webpack, typescript, npm**)</label>
+  <label for="quality">I want my code to favor best pratices. (<b>recommended</b>) (<b>webpack, typescript, npm</b>)</label><br/>
 
   <input type="radio" name="balance" id="simplicity">
-  <label for="simplicity">I want to keep my code as simple as possible. (**CDN install, pure JS**)</label>
-</div>
+  <label for="simplicity">I want to keep my code as simple as possible. (<b>CDN install, pure JS</b>)</label>
+</fieldset>
 
 
 # Summary
@@ -90,7 +103,7 @@ What student will do:
 
 </div>
 
-<div class="explanation" markdown>
+<div class="explanation vocabulary" markdown>
 
 [Canvas HTML tag][0]: 
   - Use the HTML canvas element with either the `<canvas>` scripting API or the WebGL API to draw graphics and animations.
