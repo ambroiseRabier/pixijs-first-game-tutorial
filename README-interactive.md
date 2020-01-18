@@ -531,4 +531,43 @@ tip: make a speed variable. of type Point
 
 <div class="exercice">
 Diagonal inputs (challenge is you cannot have an event with both inputs at time, so you have to keep track of what keys are actually down)
+
+```typescript
+let speed = new Point();
+
+const keysPressed: {[key: string]: number}  = {
+  'ArrowUp': 0,
+  'ArrowDown': 0,
+  'ArrowLeft': 0,
+  'ArrowRight': 0
+};
+const keyToSpeed: {[key: string]: Point} = {
+  'ArrowUp': new Point(0,-1),
+  'ArrowDown': new Point(0,1),
+  'ArrowLeft': new Point(-1,0),
+  'ArrowRight': new Point(1,0)
+};
+
+// Listen for frame updates
+app.ticker.add(() => {
+  speed = new Point(
+      keysPressed['ArrowRight'] - keysPressed['ArrowLeft'],
+      keysPressed['ArrowDown'] - keysPressed['ArrowUp']
+  );
+  // each frame we spin the bunny around a bit
+  sprite.position.x += speed.x;
+  sprite.position.y += speed.y;
+});
+
+
+
+window.addEventListener('keydown', (event: KeyboardEvent) => {
+  keysPressed[event.key] = 1;
+});
+
+window.addEventListener('keyup', (event: KeyboardEvent) => {
+  keysPressed[event.key] = 0;
+});
+```
+
 </div> 

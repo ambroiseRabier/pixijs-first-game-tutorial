@@ -33,13 +33,12 @@ app.stage.addChild(sprite);
 
 let speed = new Point();
 
-// Listen for frame updates
-app.ticker.add(() => {
-  // each frame we spin the bunny around a bit
-  sprite.position.x += speed.x;
-  sprite.position.y += speed.y;
-});
-
+const keysPressed: {[key: string]: number}  = {
+  'ArrowUp': 0,
+  'ArrowDown': 0,
+  'ArrowLeft': 0,
+  'ArrowRight': 0
+};
 const keyToSpeed: {[key: string]: Point} = {
   'ArrowUp': new Point(0,-1),
   'ArrowDown': new Point(0,1),
@@ -47,16 +46,31 @@ const keyToSpeed: {[key: string]: Point} = {
   'ArrowRight': new Point(1,0)
 };
 
-window.addEventListener('keydown', (event: KeyboardEvent) => {
-  if (keyToSpeed.hasOwnProperty(event.key)) {
-    speed = keyToSpeed[event.key];
-  }
+// Listen for frame updates
+app.ticker.add(() => {
+  speed = new Point(
+      keysPressed['ArrowRight'] - keysPressed['ArrowLeft'],
+      keysPressed['ArrowDown'] - keysPressed['ArrowUp']
+  );
+  // each frame we spin the bunny around a bit
+  sprite.position.x += speed.x;
+  sprite.position.y += speed.y;
+});
 
+window.addEventListener('keydown', (event: KeyboardEvent) => {
+  keysPressed[event.key] = 1;
 });
 
 window.addEventListener('keyup', (event: KeyboardEvent) => {
+  keysPressed[event.key] = 0;
+});
+
+
+/*
   if (keyToSpeed.hasOwnProperty(event.key)) {
     speed = new Point();
   }
-});
 
+  if (keyToSpeed.hasOwnProperty(event.key)) {
+    speed = keyToSpeed[event.key];
+  }*/
