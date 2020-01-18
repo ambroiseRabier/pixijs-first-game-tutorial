@@ -528,3 +528,7 @@ You want your game to react on keydown, to be reactive to user inputs.
 Give the loop and the how to listen to input keydown and keyup, how do you make the character move ? 
 tip: make a speed variable. of type Point
 </div> 
+
+<div class="exercice">
+Diagonal inputs (challenge is you cannot have an event with both inputs at time, so you have to keep track of what keys are actually down)
+</div> 

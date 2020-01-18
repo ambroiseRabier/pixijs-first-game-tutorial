@@ -40,15 +40,23 @@ app.ticker.add(() => {
   sprite.position.y += speed.y;
 });
 
+const keyToSpeed: {[key: string]: Point} = {
+  'ArrowUp': new Point(0,-1),
+  'ArrowDown': new Point(0,1),
+  'ArrowLeft': new Point(-1,0),
+  'ArrowRight': new Point(1,0)
+};
+
 window.addEventListener('keydown', (event: KeyboardEvent) => {
-  if (event.key === 'ArrowUp') {
-    speed = new Point(0,-1);
+  if (keyToSpeed.hasOwnProperty(event.key)) {
+    speed = keyToSpeed[event.key];
   }
+
 });
 
 window.addEventListener('keyup', (event: KeyboardEvent) => {
-  if (event.key === 'ArrowUp') {
-    speed = new Point(0,0);
+  if (keyToSpeed.hasOwnProperty(event.key)) {
+    speed = new Point();
   }
 });
 
