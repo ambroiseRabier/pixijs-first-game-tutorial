@@ -608,3 +608,4 @@ function rectRect(r1: PIXI.Rectangle, r2: PIXI.Rectangle): boolean {
 this version is better then `&&` version, because it does not try every statement.
 
 Nothing displaying ? of course, you have to make sure they can spawn and enter screen.
+they should be destroyed when they are leaving the screen, not before they entered. I chose to use a flag bool to track when they entered at least once the screen.

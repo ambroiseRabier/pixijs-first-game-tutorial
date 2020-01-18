@@ -5,6 +5,11 @@ import rockImg from './rock.png';
 import Point = PIXI.Point;
 import Sprite = PIXI.Sprite;
 import Rectangle = PIXI.Rectangle;
+import Graphics = PIXI.Graphics;
+import GraphicsGeometry = PIXI.GraphicsGeometry;
+import SHAPES = PIXI.SHAPES;
+import FillStyle = PIXI.FillStyle;
+import LineStyle = PIXI.LineStyle;
 
 // The application will create a renderer using WebGL, if possible,
 // with a fallback to a canvas render. It will also setup the ticker
@@ -36,6 +41,17 @@ app.stage.addChild(sprite);
 
 let speed = new Point();
 const playerSpeed = 6;
+const geo = new GraphicsGeometry();
+// x and y inverted du to rotation...
+const r = new Rectangle(-200,-100, 200, 200);
+const f = new FillStyle();
+f.color = 0xFF0000;
+f.alpha = 0.5;
+f.visible = true;
+geo.drawShape(r, f, new LineStyle(), app.stage.transform.worldTransform);
+const collisionBox: Graphics = new Graphics(geo);
+sprite.addChild(collisionBox);
+
 
 const keysPressed: { [key: string]: number } = {
   'ArrowUp': 0,
@@ -79,7 +95,7 @@ app.ticker.add(() => {
       rock.destroy();
       app.stage.removeChild(rock.sprite);
       allRocks.splice(allRocks.indexOf(rock), 1);
-      console.log(allRocks.length); // length stay around 16
+      //console.log(allRocks.length); // length stay around 16
     }
   }
 });
