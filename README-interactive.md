@@ -589,3 +589,22 @@ app.stage.addChild(newRock);
 ```
 
 ## 5. Repeat spawn
+
+the game is gonna be very slow if we do not destroy them.
+
+## 6. Destroy obstacles
+
+Garbage collector. remove from scene, and kill any reference.
+
+Collision
+```typescript
+function rectRect(r1: PIXI.Rectangle, r2: PIXI.Rectangle): boolean {
+  return !(r1.top > r2.bottom
+      || r1.bottom < r2.top
+      || r1.left > r2.right
+      || r1.right < r2.left);
+}
+```
+this version is better then `&&` version, because it does not try every statement.
+
+Nothing displaying ? of course, you have to make sure they can spawn and enter screen.

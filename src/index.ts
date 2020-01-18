@@ -4,6 +4,7 @@ import spaceship from './spaceship.png';
 import rockImg from './rock.png';
 import Point = PIXI.Point;
 import Sprite = PIXI.Sprite;
+import Rectangle = PIXI.Rectangle;
 
 // The application will create a renderer using WebGL, if possible,
 // with a fallback to a canvas render. It will also setup the ticker
@@ -45,6 +46,15 @@ const keysPressed: { [key: string]: number } = {
 
 const allRocks: Rock[] = [];
 
+function rectRect(r1: PIXI.Rectangle, r2: PIXI.Rectangle): boolean {
+  return !(r1.top > r2.bottom
+      || r1.bottom < r2.top
+      || r1.left > r2.right
+      || r1.right < r2.left);
+}
+
+const stageRect = new Rectangle(0,0, app.renderer.width, app.renderer.height);
+
 // Listen for frame updates
 app.ticker.add(() => {
   speed = new Point(
@@ -58,6 +68,19 @@ app.ticker.add(() => {
   for (const rock of allRocks) {
     rock.sprite.position.x += rock.speed * rock.direction.x;
     rock.sprite.position.y += rock.speed * rock.direction.y;
+
+    const outsideScreen = !rectRect(rock.sprite.getBounds(), stageRect);
+
+    if (!outsideScreen) {
+      rock.enteredScreenOnce = true;
+    }
+
+    if (rock.enteredScreenOnce && outsideScreen) {
+      rock.destroy();
+      app.stage.removeChild(rock.sprite);
+      allRocks.splice(allRocks.indexOf(rock), 1);
+      console.log(allRocks.length); // length stay around 16
+    }
   }
 });
 
@@ -77,15 +100,20 @@ class Rock {
   public sprite: Sprite;
   public speed: number;
   public direction: Point;
+  public enteredScreenOnce: boolean = false;
 
 
   constructor(speed: number, direction: Point, position: Point) {
     const rock = PIXI.Sprite.from(rockImg);
-    rock.scale = new Point(0.3, 0.3)
+    rock.scale = new Point(0.3, 0.3);
     rock.position = position;
     this.sprite = rock;
     this.speed = speed;
     this.direction = direction;
+  }
+
+  public destroy() {
+
   }
 }
 
