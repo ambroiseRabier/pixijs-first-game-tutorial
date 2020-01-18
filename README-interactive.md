@@ -16,6 +16,10 @@
 .vocabulary {
 
 }
+.exercice {
+
+}
+
 
 
 </style>
@@ -338,6 +342,26 @@ What student will do:
 
 </div>
 
+Create the scene/stage by adding this code:
+```typescript
+// The application will create a renderer using WebGL, if possible,
+// with a fallback to a canvas render. It will also setup the ticker
+// and the root stage PIXI.Container
+const app = new PIXI.Application();
+
+// The application will create a canvas element for you that you
+// can then insert into the DOM
+document.body.appendChild(app.view);
+```
+
+You can personalize the scene:
+```typescript
+const app = new PIXI.Application({
+  backgroundColor: 0x567d00,
+  // ...
+});
+```
+
 
 ## 2. Display a sprite
 <div class="teacher-note" markdown>
@@ -360,6 +384,62 @@ What student will do:
   Sprite: todo: show the inheritance shema, the base object is some kind of transform like in unity. sprite have some method in bonus. It is used to display a visual (spritesheet too right?).
 </div>
 
+Let's create an asset folder:
+```shell script
+mkdir assets
+```
+
+There is plenty of free assets you can find on the internet, you should be looking into conditions of use, licence before using them.
+This matter most if you publish your game openly on the internet, or if you make money out of your game.
+
+I will be using this png for my character:
+https://www.pinclipart.com/pindetail/obJhJJ_svg-royalty-free-library-fighter-clipart-spaceship-spaceship/#
+
+Download and rename it `spaceship.png` in the assets folder.
+
+Webpack is not configured to load images, on CDN install, it would be all.
+
+Add to webpack.config.js:
+```js
+      {
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        loader: 'file-loader',
+        options: {
+          name: '[name].[ext]',
+        }
+      }
+```
+
+You can now do `import '../assets/spaceship.png';` and `spaceship.png` will appear in `build/dist` on `npm run build`. (not in `build/dist/assets` folder) 
+
+We can make this better. Add a file named `global.d.ts` in `src` with content:
+```typescript
+declare module "*.jpg" {
+  const value: string;
+  export default value;
+}
+
+declare module "*.png" {
+  const value: string;
+  export default value;
+}
+// you can add more when needed
+```
+
+It will allow to do this:
+```typescript
+import spaceship from '../assets/spaceship.png';
+app.stage.addChild(PIXI.Sprite.from(spaceship));
+```
+
+Nowadays, it is frequent to see the assets being mixed with the scripts using it. If you have a game artist with you, you want to discuss it with him. 
+It can make it harder for them to update their assets, they often copy paste a folder of them containing all the usable assets, 
+with a folder hierarchy that if 100% into their hands.
+
+However, if you are alone, it will probably be easier to mix thing up by module. Move spaceship.png into src, and remove assets folder.
+
+@Src https://stackoverflow.com/questions/37671342/how-to-load-image-files-with-webpack-file-loader
+@Src https://stackoverflow.com/questions/36148639/webpack-not-able-to-import-images-using-express-and-angular2-in-typescript
 
 ## 3. Move sprite once
 <div class="teacher-note" markdown>

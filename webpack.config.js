@@ -23,11 +23,20 @@ module.exports = {
           name: '[name].[ext]',
         }
       },
+      {
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        loader: 'file-loader',
+        options: {
+          name: '[name].[ext]',
+        }
+      }
     ]
   },
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
     compress: true,
-    port: 8080
+    // you can specify another port, but when starting the dev server webpack indicate localhost:8000, that is wrong,
+    // it is just visual, but let's keep port 8000 to make it less confusing
+    port: 8000
   }
 };
