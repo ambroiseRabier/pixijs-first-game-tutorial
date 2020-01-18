@@ -446,13 +446,15 @@ import spaceship from './spaceship.png';
 @Src https://stackoverflow.com/questions/37671342/how-to-load-image-files-with-webpack-file-loader
 @Src https://stackoverflow.com/questions/36148639/webpack-not-able-to-import-images-using-express-and-angular2-in-typescript
 
+##
+
 We want to resize the sprite, and turn it 90°. It should be the image itself that should be fixed by the game artist, so that the game artist keep full control and correct feedback over what he is doing.
 We are doing it for pedagogic purpose.
 
 ```typescript
 const sprite = PIXI.Sprite.from(spaceship);
 
-// Setup the position of the bunny
+// Setup the position of the sprite
 sprite.x = app.renderer.width / 2;
 sprite.y = app.renderer.height / 2;
 
@@ -467,14 +469,28 @@ sprite.scale = new Point(0.15, 0.15);
 
 app.stage.addChild(sprite);
 ```
+@Src https://github.com/pixijs/pixi.js?utm_source=html5weekly#basic-usage-example
 
 anchor is used for rotation and ? (!= origin) (does it move sprite?)
 Rotation is in radian, not degrees.
 You can also note, that the sprite is a bit too detailed for his small size I am giving him.
 
-## 3. Move sprite once
+
+## 3. Gameloop
 <div class="teacher-note" markdown>
   Do:
   - Modify a sprite state.
   - Re-render the scene.
 </div>
+
+```typescript
+app.ticker.add(() => {
+  // each frame we spin the bunny around a bit
+  sprite.rotation += 0.01;
+});
+
+```
+
+There is also `requestAnimationFrame` and `setInterval`. Pixijs Ticker class is using the first one underhood.
+
+## 4. Inputs

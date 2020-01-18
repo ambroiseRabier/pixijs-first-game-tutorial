@@ -30,3 +30,10 @@ sprite.scale = new Point(0.15, 0.15);
 
 
 app.stage.addChild(sprite);
+
+// Listen for frame updates
+app.ticker.add(() => {
+  // each frame we spin the bunny around a bit
+  sprite.rotation += 0.01;
+});
+
