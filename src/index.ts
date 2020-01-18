@@ -49,8 +49,8 @@ f.color = 0xFF0000;
 f.alpha = 0.5;
 f.visible = true;
 geo.drawShape(r, f, new LineStyle(), app.stage.transform.worldTransform);
-const collisionBox: Graphics = new Graphics(geo);
-sprite.addChild(collisionBox);
+const hitbox: Graphics = new Graphics(geo);
+sprite.addChild(hitbox);
 
 
 const keysPressed: { [key: string]: number } = {
@@ -84,6 +84,22 @@ app.ticker.add(() => {
   for (const rock of allRocks) {
     rock.sprite.position.x += rock.speed * rock.direction.x;
     rock.sprite.position.y += rock.speed * rock.direction.y;
+
+    const toGlobalHitboxTopLeft = hitbox.toGlobal(app.stage.position);
+    // this is ugly, I feel like I am missing something.
+    const toGlobalHitboxBottomRight = new Point(toGlobalHitboxTopLeft.x + hitbox.width * sprite.scale.x, toGlobalHitboxTopLeft.y + hitbox.height * sprite.scale.y);
+    const toGlobalHitbox = new Rectangle(
+        toGlobalHitboxTopLeft.x,
+        toGlobalHitboxTopLeft.y,
+        toGlobalHitboxBottomRight.x - toGlobalHitboxTopLeft.x,
+        toGlobalHitboxBottomRight.y - toGlobalHitboxTopLeft.y,
+    );
+
+
+    const collideWithPlayer = rectRect(rock.sprite.getBounds(), toGlobalHitbox);
+    if (collideWithPlayer) {
+      console.log('you lose');
+    }
 
     const outsideScreen = !rectRect(rock.sprite.getBounds(), stageRect);
 
