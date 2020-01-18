@@ -587,3 +587,5 @@ function makeRock(position: Point, direction: radian): Sprite {
 const newRock = makeRock(new Point(app.renderer.width/2, app.renderer.height/2), 0);
 app.stage.addChild(newRock);
 ```
+
+## 5. Repeat spawn

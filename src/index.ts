@@ -27,30 +27,38 @@ sprite.anchor.x = 0.5;
 sprite.anchor.y = 0.5;
 
 // Use radian, not degrees.
-sprite.rotation = -Math.PI /2;
+sprite.rotation = -Math.PI / 2;
 sprite.scale = new Point(0.15, 0.15);
 
 
 app.stage.addChild(sprite);
 
 let speed = new Point();
+const playerSpeed = 6;
 
-const keysPressed: {[key: string]: number}  = {
+const keysPressed: { [key: string]: number } = {
   'ArrowUp': 0,
   'ArrowDown': 0,
   'ArrowLeft': 0,
   'ArrowRight': 0
 };
 
+const allRocks: Rock[] = [];
+
 // Listen for frame updates
 app.ticker.add(() => {
   speed = new Point(
-      keysPressed['ArrowRight'] - keysPressed['ArrowLeft'],
-      keysPressed['ArrowDown'] - keysPressed['ArrowUp']
+      (keysPressed['ArrowRight'] - keysPressed['ArrowLeft']) * playerSpeed,
+      (keysPressed['ArrowDown'] - keysPressed['ArrowUp']) * playerSpeed
   );
   // each frame we spin the bunny around a bit
   sprite.position.x += speed.x;
   sprite.position.y += speed.y;
+
+  for (const rock of allRocks) {
+    rock.sprite.position.x += rock.speed * rock.direction.x;
+    rock.sprite.position.y += rock.speed * rock.direction.y;
+  }
 });
 
 window.addEventListener('keydown', (event: KeyboardEvent) => {
@@ -63,12 +71,68 @@ window.addEventListener('keyup', (event: KeyboardEvent) => {
 
 type radian = number;
 
-function makeRock(position: Point, direction: radian): Sprite {
-  const rock = PIXI.Sprite.from(rockImg);
-  rock.position = position;
-  rock.rotation = direction;
-  return rock;
+class Rock {
+  // prefer composition over inheritance
+  // See MVC pattern
+  public sprite: Sprite;
+  public speed: number;
+  public direction: Point;
+
+
+  constructor(speed: number, direction: Point, position: Point) {
+    const rock = PIXI.Sprite.from(rockImg);
+    rock.scale = new Point(0.3, 0.3)
+    rock.position = position;
+    this.sprite = rock;
+    this.speed = speed;
+    this.direction = direction;
+  }
 }
 
-const newRock = makeRock(new Point(app.renderer.width/2, app.renderer.height/2), 0);
-app.stage.addChild(newRock);
+function magnitude(x: number, y: number): number {
+  return Math.sqrt(x*x +  y*y);
+}
+function magnitudePoint(p: Point): number {
+  return Math.sqrt(p.x*p.x +  p.y*p.y);
+}
+
+setInterval(() => {
+  // spawn the rock outside of camera (stage == camera because we haven't moved it)
+  const sideChosen = Math.floor(Math.random() * 4); // 0, 1, 2, 3
+
+  // should be relative to rock width. I use a arbitrary value for easyness.
+  const right = app.renderer.width + 200;
+  const left = -200;
+  const top = -200;
+  const bottom = app.renderer.width - 200;
+
+  const startPositions = [
+    new Point(right, Math.random() * app.renderer.height),
+    new Point(left, Math.random() * app.renderer.height),
+    new Point(Math.random() * app.renderer.width, top),
+    new Point(Math.random() * app.renderer.width, bottom),
+  ];
+
+  const spawnPoint = startPositions[sideChosen];
+  const diff: Point = new Point(
+      sprite.position.x - spawnPoint.x,
+      sprite.position.y - spawnPoint.y
+  );
+
+  const diffMagnitude = magnitudePoint(diff);
+  // unit vector
+  const towardPlayer = new Point(
+      diff.x / diffMagnitude,
+      diff.y / diffMagnitude
+  );
+
+  const rock = new Rock(
+      1,
+      towardPlayer,
+      spawnPoint
+  );
+
+  allRocks.push(rock);
+
+  app.stage.addChild(rock.sprite);
+}, 1000);
