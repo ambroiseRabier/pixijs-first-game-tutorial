@@ -436,10 +436,41 @@ Nowadays, it is frequent to see the assets being mixed with the scripts using it
 It can make it harder for them to update their assets, they often copy paste a folder of them containing all the usable assets, 
 with a folder hierarchy that if 100% into their hands.
 
-However, if you are alone, it will probably be easier to mix thing up by module. Move spaceship.png into src, and remove assets folder.
+However, if you are alone, it will probably be easier to mix thing up by module. Move spaceship.png into src, and remove assets folder. 
+It won't make much a difference for a very small game. But when you start adding subfolder, more files, classes, it will help you stay organized.
+
+```typescript
+import spaceship from './spaceship.png';
+```
 
 @Src https://stackoverflow.com/questions/37671342/how-to-load-image-files-with-webpack-file-loader
 @Src https://stackoverflow.com/questions/36148639/webpack-not-able-to-import-images-using-express-and-angular2-in-typescript
+
+We want to resize the sprite, and turn it 90°. It should be the image itself that should be fixed by the game artist, so that the game artist keep full control and correct feedback over what he is doing.
+We are doing it for pedagogic purpose.
+
+```typescript
+const sprite = PIXI.Sprite.from(spaceship);
+
+// Setup the position of the bunny
+sprite.x = app.renderer.width / 2;
+sprite.y = app.renderer.height / 2;
+
+// Rotate around the center
+sprite.anchor.x = 0.5;
+sprite.anchor.y = 0.5;
+
+// Use radian, not degrees.
+sprite.rotation = -Math.PI /2;
+sprite.scale = new Point(0.15, 0.15);
+
+
+app.stage.addChild(sprite);
+```
+
+anchor is used for rotation and ? (!= origin) (does it move sprite?)
+Rotation is in radian, not degrees.
+You can also note, that the sprite is a bit too detailed for his small size I am giving him.
 
 ## 3. Move sprite once
 <div class="teacher-note" markdown>
