@@ -494,3 +494,37 @@ app.ticker.add(() => {
 There is also `requestAnimationFrame` and `setInterval`. Pixijs Ticker class is using the first one underhood.
 
 ## 4. Inputs
+
+```typescript
+let speed = new Point();
+
+// Listen for frame updates
+app.ticker.add(() => {
+  // each frame we spin the bunny around a bit
+  sprite.position.x += speed.x;
+  sprite.position.y += speed.y;
+});
+
+window.addEventListener('keydown', (event: KeyboardEvent) => {
+  if (event.key === 'ArrowUp') {
+    speed = new Point(0,-1);
+  }
+});
+
+window.addEventListener('keyup', (event: KeyboardEvent) => {
+  if (event.key === 'ArrowUp') {
+    speed = new Point(0,0);
+  }
+});
+```
+
+keydown happen once when you press, then after a second, it is reapeated. 
+Like when you press 0 key on notepad, and if you keep pressing it start writing a line of that character.
+keyup is when you release the key.
+there is also key event.
+You want your game to react on keydown, to be reactive to user inputs.
+
+<div class="exercice">
+Give the loop and the how to listen to input keydown and keyup, how do you make the character move ? 
+tip: make a speed variable. of type Point
+</div> 

@@ -31,9 +31,24 @@ sprite.scale = new Point(0.15, 0.15);
 
 app.stage.addChild(sprite);
 
+let speed = new Point();
+
 // Listen for frame updates
 app.ticker.add(() => {
   // each frame we spin the bunny around a bit
-  sprite.rotation += 0.01;
+  sprite.position.x += speed.x;
+  sprite.position.y += speed.y;
+});
+
+window.addEventListener('keydown', (event: KeyboardEvent) => {
+  if (event.key === 'ArrowUp') {
+    speed = new Point(0,-1);
+  }
+});
+
+window.addEventListener('keyup', (event: KeyboardEvent) => {
+  if (event.key === 'ArrowUp') {
+    speed = new Point(0,0);
+  }
 });
 
