@@ -571,3 +571,19 @@ window.addEventListener('keyup', (event: KeyboardEvent) => {
 ```
 
 </div> 
+
+## 4. Spawn obstacles
+
+```typescript
+type radian = number;
+
+function makeRock(position: Point, direction: radian): Sprite {
+  const rock = PIXI.Sprite.from(rockImg);
+  rock.position = position;
+  rock.rotation = direction;
+  return rock;
+}
+
+const newRock = makeRock(new Point(app.renderer.width/2, app.renderer.height/2), 0);
+app.stage.addChild(newRock);
+```

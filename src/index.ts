@@ -1,7 +1,9 @@
 import * as PIXI from 'pixi.js';
 import './index.html';
 import spaceship from './spaceship.png';
+import rockImg from './rock.png';
 import Point = PIXI.Point;
+import Sprite = PIXI.Sprite;
 
 // The application will create a renderer using WebGL, if possible,
 // with a fallback to a canvas render. It will also setup the ticker
@@ -39,12 +41,6 @@ const keysPressed: {[key: string]: number}  = {
   'ArrowLeft': 0,
   'ArrowRight': 0
 };
-const keyToSpeed: {[key: string]: Point} = {
-  'ArrowUp': new Point(0,-1),
-  'ArrowDown': new Point(0,1),
-  'ArrowLeft': new Point(-1,0),
-  'ArrowRight': new Point(1,0)
-};
 
 // Listen for frame updates
 app.ticker.add(() => {
@@ -65,12 +61,14 @@ window.addEventListener('keyup', (event: KeyboardEvent) => {
   keysPressed[event.key] = 0;
 });
 
+type radian = number;
 
-/*
-  if (keyToSpeed.hasOwnProperty(event.key)) {
-    speed = new Point();
-  }
+function makeRock(position: Point, direction: radian): Sprite {
+  const rock = PIXI.Sprite.from(rockImg);
+  rock.position = position;
+  rock.rotation = direction;
+  return rock;
+}
 
-  if (keyToSpeed.hasOwnProperty(event.key)) {
-    speed = keyToSpeed[event.key];
-  }*/
+const newRock = makeRock(new Point(app.renderer.width/2, app.renderer.height/2), 0);
+app.stage.addChild(newRock);
