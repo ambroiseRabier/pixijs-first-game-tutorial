@@ -18,6 +18,13 @@
 
 Exercices, what to say. more?
 
+# Meta
+
+Exercices should be on stuff that the student has seen before. It should be easy exercices.
+Exercice are here to make the student get into it, be part of it. It make them active learner.
+Exercices are a fun way to learn, to discover, and be creative, to have fun searching a solution by yourself.
+There is no need that the student find the solution at the end. It will be provided.
+
 
 # Summary
 
@@ -27,7 +34,8 @@ Exercices, what to say. more?
 
 <div class="objectives" markdown>
 What the student should be able to do afterward:
-- Setup a project from zero with npm, git, pixiJS, typescript.
+  - Install pixiJS from CDN.
+  - Install pixiJS with webpack/ts/npm from github template.
 
 What student should understand:
 - What canvas and WebGL API is, what is better.
@@ -50,13 +58,13 @@ Make sure everyone can `npm start` and `npm build`, or at least log pixijs in co
 <div class="teacher-note" markdown>
 
 What the student should be able to do afterward:
-- Write basic scene setup with pxiJS (few lines).
+  - Setup a basic pixijs stage.
 
 What student should understand:
-  - What the scene is.
+  - What the scene/stage is.
 
 What student will do:
-  - Define width and height of scene.
+  - Define width and height of stage (but it is recommended to keep default).
   - Check that it work by changing scene background color.
 
 </div>
@@ -67,14 +75,17 @@ What student will do:
   What the student should be able to do afterward:
   - Create a sprite from an image.
   - Add a sprite on the scene.
-  - Make the change visible by rendering.
 
   What student should understand:
   - What a sprite is.
+  - Understand that when adding a child to the stage, it is re-rendered, but most of time, you have to wait for next frame of the gameloop.
 
   What student will do:
-  - Load an image/asset async.
+  - Modify webpack and typings to load image.
   - Make a sprite out of an image.
+  - Rotate to set the spaceship looking to the top.
+  - Translate to set the spaceship in middle of the screen.
+  - Scale the spaceship to an acceptable size.
   - Spawn the sprite on the scene.
 
 </div>
@@ -82,30 +93,67 @@ What student will do:
 ## 3. Gameloop
 <div class="teacher-note" markdown>
   What the student should be able to do afterward:
-  - Modify a sprite state.
-  - Re-render the scene.
+  - Use gameloop to make a continuous change to a sprite.
   
   What student should understand:
-  
+    - In the gameloop function, you are updating state of elements, and render happens at the end.
+    - Each render is called a frame, by default it is capped to 60FPS on pixiJS. (to be confirmed?)
+    - Know about setInterval, requestAnimationFrame, pixiJS ticker.
+    
   What student will do:
+    - Make the sprite rotate on itself smoothly.
 
 </div>
 
 ## 4. Inputs
 <div class="teacher-note" markdown>
   What the student should be able to do afterward:
+    - Capture user inputs and translate them into visible change.
   
   What student should understand:
+    - How to capture inputs.
   
   What student will do:
-
+    - Capture keydown ArrowUp input and log it.
+    - (exercice) Move character with arrow keys.
 </div>
 
 
 <div class="exercice" markdown>
-Give the loop and the how to listen to input keydown and keyup, how do you make the character move ? 
-tip: make a speed variable. of type Point
-</div> 
+Knowing how to capture inputs, how do you make the character move? 
+</div>
+<div class="teacher-note" markdown>
+There can be creative solutions to share to the class. There is pleasure in discovery.
+
+```typescript
+window.addEventListener('keydown', (event: KeyboardEvent) => {
+  if (event.key === 'ArrowUp') {
+    //sprite.position += ...
+  }
+});
+```
+This for example will have the sprite move once, then wait a second, then move continuously.
+
+```typescript
+window.addEventListener('keydown', (event: KeyboardEvent) => {
+  if (event.key === 'ArrowUp') {
+    speed = new Point(0,-1);
+  }
+});
+```
+You can then do something like this, but you end up with a character that never reset speed.
+If you add:
+
+```typescript
+window.addEventListener('keyup', (event: KeyboardEvent) => {
+  if (event.key === 'ArrowUp') {
+    speed = new Point(0,0);
+  }
+});
+```
+You get something that work for one input, but if you have many inputs, you get clunky controls.
+
+</div>
 
 <div class="exercice" markdown>
 Diagonal inputs (challenge is you cannot have an event with both inputs at time, so you have to keep track of what keys are actually down)

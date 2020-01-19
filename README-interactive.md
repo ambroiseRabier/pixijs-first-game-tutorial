@@ -328,19 +328,6 @@ verify that you can build and start without errors.
 
 
 ## 1. Setup scene
-<div class="teacher-note" markdown>
-
-What the student should be able to do afterward:
-- Write basic scene setup with pxiJS (few lines).
-
-What student should understand:
-  - What the scene is.
-
-What student will do:
-  - Define width and height of scene.
-  - Check that it work by changing scene background color.
-
-</div>
 
 Create the scene/stage by adding this code:
 ```typescript
@@ -358,27 +345,12 @@ You can personalize the scene:
 ```typescript
 const app = new PIXI.Application({
   backgroundColor: 0x567d00,
-  // ...
+  // width, height, ...
 });
 ```
 
 
 ## 2. Display a sprite
-<div class="teacher-note" markdown>
-  KnowHowTo:
-  - Create a sprite from an image.
-  - Add a sprite on the scene.
-  - Make the change visible by rendering.
-
-  Understand:
-  - What a sprite is.
-
-  Do:
-  - Load an image/asset async.
-  - Make a sprite out of an image.
-  - Spawn the sprite on the scene.
-
-</div>
 
 <div class="explanation" markdown>
   Sprite: todo: show the inheritance shema, the base object is some kind of transform like in unity. sprite have some method in bonus. It is used to display a visual (spritesheet too right?).
