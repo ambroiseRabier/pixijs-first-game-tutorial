@@ -609,3 +609,5 @@ this version is better then `&&` version, because it does not try every statemen
 
 Nothing displaying ? of course, you have to make sure they can spawn and enter screen.
 they should be destroyed when they are leaving the screen, not before they entered. I chose to use a flag bool to track when they entered at least once the screen.
+
+## 7. Restart

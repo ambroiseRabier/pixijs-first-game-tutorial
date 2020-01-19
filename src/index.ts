@@ -23,10 +23,12 @@ const app = new PIXI.Application({
 document.body.appendChild(app.view);
 
 const sprite = PIXI.Sprite.from(spaceship);
-
-// Setup the position of the bunny
-sprite.x = app.renderer.width / 2;
-sprite.y = app.renderer.height / 2;
+const startPos = new Point(
+    app.renderer.width / 2,
+    app.renderer.height / 2,
+);
+// Setup the position of the player
+sprite.position = new Point(startPos.x, startPos.y); // I prefer not sharing reference here
 
 // Rotate around the center
 sprite.anchor.x = 0.5;
@@ -71,6 +73,15 @@ function rectRect(r1: PIXI.Rectangle, r2: PIXI.Rectangle): boolean {
 
 const stageRect = new Rectangle(0,0, app.renderer.width, app.renderer.height);
 
+function restart() {
+  for (const rock of allRocks) {
+    rock.destroy();
+    app.stage.removeChild(rock.sprite);
+  }
+  allRocks.splice(0, allRocks.length);
+  sprite.position = new Point(startPos.x, startPos.y);
+}
+
 // Listen for frame updates
 app.ticker.add(() => {
   speed = new Point(
@@ -98,7 +109,8 @@ app.ticker.add(() => {
 
     const collideWithPlayer = rectRect(rock.sprite.getBounds(), toGlobalHitbox);
     if (collideWithPlayer) {
-      console.log('you lose');
+      restart();
+      break;
     }
 
     const outsideScreen = !rectRect(rock.sprite.getBounds(), stageRect);
