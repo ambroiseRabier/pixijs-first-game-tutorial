@@ -357,7 +357,7 @@ const app = new PIXI.Application({
 </div>
 
 Let's create an asset folder:
-```shell script
+```sh
 mkdir assets
 ```
 
@@ -385,7 +385,7 @@ Add to webpack.config.js:
 You can now do `import '../assets/spaceship.png';` and `spaceship.png` will appear in `build/dist` on `npm run build`. (not in `build/dist/assets` folder) 
 
 We can make this better. Add a file named `global.d.ts` in `src` with content:
-```typescript
+```ts
 declare module "*.jpg" {
   const value: string;
   export default value;
@@ -399,7 +399,7 @@ declare module "*.png" {
 ```
 
 It will allow to do this:
-```typescript
+```ts
 import spaceship from '../assets/spaceship.png';
 app.stage.addChild(PIXI.Sprite.from(spaceship));
 ```
@@ -411,7 +411,7 @@ with a folder hierarchy that if 100% into their hands.
 However, if you are alone, it will probably be easier to mix thing up by module. Move spaceship.png into src, and remove assets folder. 
 It won't make much a difference for a very small game. But when you start adding subfolder, more files, classes, it will help you stay organized.
 
-```typescript
+```ts
 import spaceship from './spaceship.png';
 ```
 
@@ -423,7 +423,7 @@ import spaceship from './spaceship.png';
 We want to resize the sprite, and turn it 90°. It should be the image itself that should be fixed by the game artist, so that the game artist keep full control and correct feedback over what he is doing.
 We are doing it for pedagogic purpose.
 
-```typescript
+```ts
 const sprite = PIXI.Sprite.from(spaceship);
 
 // Setup the position of the sprite
@@ -455,7 +455,7 @@ You can also note, that the sprite is a bit too detailed for his small size I am
   - Re-render the scene.
 </div>
 
-```typescript
+```ts
 app.ticker.add(() => {
   // each frame we spin the bunny around a bit
   sprite.rotation += 0.01;
@@ -467,7 +467,7 @@ There is also `requestAnimationFrame` and `setInterval`. Pixijs Ticker class is 
 
 ## 4. Inputs
 
-```typescript
+```ts
 let speed = new Point();
 
 // Listen for frame updates
@@ -496,15 +496,15 @@ keyup is when you release the key.
 there is also key event.
 You want your game to react on keydown, to be reactive to user inputs.
 
-<div class="exercice">
+<div class="exercice" markdown>
 Give the loop and the how to listen to input keydown and keyup, how do you make the character move ? 
 tip: make a speed variable. of type Point
 </div> 
 
-<div class="exercice">
+<div class="exercice" markdown>
 Diagonal inputs (challenge is you cannot have an event with both inputs at time, so you have to keep track of what keys are actually down)
 
-```typescript
+```ts
 let speed = new Point();
 
 const keysPressed: {[key: string]: number}  = {
@@ -546,7 +546,7 @@ window.addEventListener('keyup', (event: KeyboardEvent) => {
 
 ## 4. Spawn obstacles
 
-```typescript
+```ts
 type radian = number;
 
 function makeRock(position: Point, direction: radian): Sprite {
@@ -569,7 +569,7 @@ the game is gonna be very slow if we do not destroy them.
 Garbage collector. remove from scene, and kill any reference.
 
 Collision
-```typescript
+```ts
 function rectRect(r1: PIXI.Rectangle, r2: PIXI.Rectangle): boolean {
   return !(r1.top > r2.bottom
       || r1.bottom < r2.top

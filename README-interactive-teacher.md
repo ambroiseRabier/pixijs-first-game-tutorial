@@ -187,7 +187,7 @@ Diagonal inputs (challenge is you cannot have an event with both inputs at time,
 
 <div class="exercice" markdown>
 1. Using setInterval, spawn a randomly on the map every X seconds.
-2. Using a unit vector, make the rock move toward the player.
+2. Using a unit vector and the gameloop, make the rock move toward the player.
 3. Using `app.renderer.height` and `app.renderer.width`, spawn the rock outside the map (not too far outside).
 </div>
 
