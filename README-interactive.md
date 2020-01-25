@@ -135,11 +135,12 @@ Each step is tagged, click on the title to get to the state of the code at start
 
 <div class="explanation" markdown>
 
-You can use a [CDN](https://github.com/pixijs/pixi.js?utm_source=html5weekly#cdn-install-via-cdnjs) install instead of npm and typescript. It is good to know it can be as simple as that.
+You can use a [CDN](https://github.com/pixijs/pixi.js?utm_source=html5weekly#cdn-install-via-cdnjs) install, instead of npm and typescript. It is good to know, it can be as simple as that.
 
 </div>
 
 <div class="do" markdown>
+
 
 src/index.html
 ```html
@@ -157,6 +158,8 @@ src/index.html
 </body>
 </html>
 ```
+
+Replace `5.1.3` by latest available version.
 
 </div>
 
