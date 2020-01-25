@@ -155,23 +155,39 @@ src/index.html
   <script>
     console.log(PIXI);
   </script>
+  <!-- OR make an index.js file in the same folder -->
+  
 </body>
 </html>
 ```
 
-Replace `5.1.3` by latest available version.
+Replace `5.1.3` by latest available version. You can also replace
+
+```html
+  <script>
+    console.log(PIXI);
+  </script>
+```
+
+by
+
+```html
+<script src="index.js"></script>
+```
 
 </div>
 
 
 ### 0.2 Npm/ts install
 
+Note that it will be up to you, to decide when to commit.
+
 <div class="do" markdown>
 
 ```sh
 cd pixijs-first-game/
 git init
-npm init
+npm init -y
 npm i --save pixi.js typescript
 touch .gitignore
 
