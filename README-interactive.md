@@ -187,14 +187,17 @@ Note that it will be up to you, to decide when to commit.
 ```sh
 cd pixijs-first-game/
 git init
-npm init -y
-npm i --save pixi.js typescript
 touch .gitignore
 
-# .idea folder should be ignored by git, if you are using Webstorm IDE
+# Webstorm IDE
 echo .idea/ >> .gitignore
 echo node_modules/ >> .gitignore
+# Build folder
 echo dist/ >> .gitignore
+
+npm init -y
+npm i --save pixi.js typescript
+
 
 # create tsconfig.json
 tsc --init

@@ -1,0 +1,26 @@
+{
+  "name": "pixijs-first-game-tutorial",
+  "version": "1.0.0",
+  "description": "PixiJS typescript npm webpack tutorial",
+  "main": "index.js",
+  "dependencies": {
+    "pixi.js": "^5.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^3.7.5"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ambroiseRabier/pixijs-first-game-tutorial.git"
+  },
+  "keywords": ["pixijs", "tutorial", "typescript", "webpack"],
+  "author": "Ambroise Rabier",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ambroiseRabier/pixijs-first-game-tutorial/issues"
+  },
+  "homepage": "https://github.com/ambroiseRabier/pixijs-first-game-tutorial#readme"
+}
