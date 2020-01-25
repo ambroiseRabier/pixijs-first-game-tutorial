@@ -178,7 +178,9 @@ by
 </div>
 
 
-### 0.2 Npm/ts install
+### 0.2 Npm/ts/webpack install
+
+#### Npm and Typescript
 
 Note that it will be up to you, to decide when to commit.
 
@@ -216,31 +218,46 @@ Change your `tsconfig.json` to (you can keep commented line):
       "esnext"
     ],
     "sourceMap": true,
-    "outDir": "./dist",
     "strict": true,
     "moduleResolution": "node",
     "esModuleInterop": true
-  },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "compileOnSave": true
+  }
 }
 ```
 
-Commented lines are not defaults values.
+/!\ Commented lines in tsconfig does not show defaults values. This can be misleading.
 
+**target, module**  
+We want to work with the latest technology available (but losing in compatibility with old browsers).
+
+**lib**  
+We have to add necessary library to work with the browser ans ESNext.
+
+**sourceMap**  
+This allow the browser to map outputted JS code to original TS code. Helpful for debugging, but this expose your sources in the final product.
+
+**outDir**  
+Where we want our Typescript to compile. Default typescript config output JS file rightn ext to TS files. We do not need it, because we will be using webpack.
+
+**strict**  
+Add a couple of rules making the typing system stricter.
+
+**esModuleInterop**
+\-
+
+**moduleResolution**  
+This look like it should be default, but if you do not decomment this line, Typescript will not find `pixijs` module when trying to import it.
+
+**include** 
+We do not need this option, because we will be using webpack. Without webpack, it would allow us, to limit compilation to `src` folder.
+
+
+Create the files and directory as bellow:
 ```sh
 mkdir src
 touch src/index.html
 touch src/index.ts
 ```
-
-</div>
-
-<div class="explanation" markdown>
-
-I won't explain the typescript configuration, too long and complicated and not the purpose here. (or maybe yes: todo)
 
 </div>
 
@@ -265,15 +282,23 @@ src/index.ts
 ```ts
 import * as PIXI from 'pixi.js';
 
+// This should not log undefined.
 console.log(PIXI);
 ```
 </div>
 
+#### Webpack
+
 <div class="explanation" markdown>
-To allow us to leverage npm package, we need a javascript bundler. We will be using webpack.
+To allow us to leverage npm packages, we need a javascript bundler. We will be using webpack.
 </div>
 
 <div class="do" markdown>
+
+```sh
+npm i -D ts-loader webpack webpack-cli
+touch webpack.config.js
+```
 
 webpack.config.js
 ```js
@@ -299,26 +324,18 @@ module.exports = {
 @See https://github.com/TypeStrong/ts-loader#configuration
 @See https://webpack.js.org/guides/getting-started/
 
-```sh
-npm i -D ts-loader webpack webpack-cli webpack-dev-server
-```
 
 You can add a npm script in `package.json` to build:
 ```json
 {
   "scripts": {
-      "start": "webpack-dev-server",
       "build": "webpack"
   }
 }
 ```
 
-This will create a server watching your file and live reloading your webpage on change.
-```sh
-npm run start
-```
 
-You can build, but if you wanna test the build, you will need an http server (to avoid CORS). If you use Webstorm, you can right click `dist/index.html` then run. Another possibility is to use `http-server` package, but even with that, it only worked on chrome and not Firefox.
+If you build now, you will end up with a `bundle.js` inside `dist` folder, that is not useful without our `index.html`...
 ```sh
 npm run build
 ```
@@ -330,13 +347,20 @@ npm run build
 
 <div markdown>
 
-do `npm i -D file-loader`
+We gonna add our `index.html` to the webpack output.
 
-in index.ts add `import './index.html';`, so that it is added by webpack in dist.
+Add `file-loader` package.
+```sh 
+npm i -D file-loader
+```
 
-add in webpack config:
+In `index.ts` add `import './index.html';`, so that it is added by webpack in dist.
 
+In webpack config, add:
 ```js
+module.exports = {
+  module: {
+    rules: [
       {
         test: /\.html/,
         loader: 'file-loader',
@@ -344,13 +368,42 @@ add in webpack config:
           name: '[name].[ext]',
         }
       },
+    ]
+  }
+}
 ```
 
-go onto http://localhost:8080/, add a console log, verify that the new console log is displayed.
-verify that you can build and start without errors.
+Build and check that `index.html` is put inside `dist` foler.
+```sh
+npm run build
+```
 
+However, if you try to open the `dist/index.html`, you will be blocked by CORS (Cross origin request security). If you are using Webstorm, you can right click on the file and click `run 'index.html'`. When opening the console you should see a log starting with `Object {`. Another way would be to make a webserver in nodejs (using `http-server` package for example), to serve `index.html` without CORS issues.
+There is a more practical way of viewing our code in development, using `webpack-dev-server` package.
 </div>
 
+#### Webpack dev server
+
+Install the package.
+```sh
+npm i -D webpack-dev-server
+```
+
+In `package.json` add:
+```json
+{
+  "scripts": {
+      "start": "webpack-dev-server",
+  }
+}
+```
+
+```sh
+npm run start
+```
+This will create a server watching your file and live reloading your webpage on change.
+
+Open `http://localhost:8080/`, and check your console that you have a log that is not undefined. Should start with `Object {`.
 
 ## 1. Setup scene
 
