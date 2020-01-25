@@ -54,7 +54,7 @@ It is not the purpose of this tutorial to explain npm/ts/webpack.
 Make sure everyone can `npm start` and `npm build`, or at least log pixijs in console if they use CDN install (if no nodeJS installable on PC right now).
 </div>
 
-## 1. Setup scene
+## 1. Setup stage
 <div class="teacher-note" markdown>
 
 What the student should be able to do afterward:

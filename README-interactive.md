@@ -405,31 +405,38 @@ This will create a server watching your file and live reloading your webpage on 
 
 Open `http://localhost:8080/`, and check your console that you have a log that is not undefined. Should start with `Object {`.
 
-## 1. Setup scene
+## 1. Setup stage
 
 If you have skipped the previous part, download the project with:
 
 ```sh
-git clone --branch 1-setup-scene git@github.com:ambroiseRabier/pixijs-first-game-tutorial.git
+git clone --branch 1-setup-stage git@github.com:ambroiseRabier/pixijs-first-game-tutorial.git
 ```
 
 ---
 
-Create the scene/stage by adding this code:
-```typescript
+Create the scene/stage, you `index.ts` should be:
+```ts
+import './index.html';
+import {Application} from 'pixi.js';
+
+
 // The application will create a renderer using WebGL, if possible,
 // with a fallback to a canvas render. It will also setup the ticker
 // and the root stage PIXI.Container
-const app = new PIXI.Application();
+const app = new Application();
 
 // The application will create a canvas element for you that you
 // can then insert into the DOM
 document.body.appendChild(app.view);
 ```
 
+Auto-import on my IDE give me `import Application = PIXI.Application;`, instead of better looking named exports. I guess this is an issue with pixiJS.
+
+
 You can personalize the scene:
-```typescript
-const app = new PIXI.Application({
+```ts
+const app = new Application({
   backgroundColor: 0x567d00,
   // width, height, ...
 });
