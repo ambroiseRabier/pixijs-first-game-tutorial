@@ -196,20 +196,46 @@ echo node_modules/ >> .gitignore
 echo dist/ >> .gitignore
 
 npm init -y
-npm i --save pixi.js typescript
+npm i --save pixi.js 
+npm i --save-dev typescript
 
 
 # create tsconfig.json
 tsc --init
+```
 
+Change your `tsconfig.json` to (you can keep commented line):
+```json
+{
+  "compilerOptions": {
+    "target": "ESNEXT",
+    "module": "ESNext",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "sourceMap": true,
+    "outDir": "./dist",
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "compileOnSave": true
+}
+```
+
+Commented lines are not defaults values.
+
+```sh
 mkdir src
 touch src/index.html
 touch src/index.ts
 ```
 
-Change your tsconfig.json so that you have:
-```json
-```
 </div>
 
 <div class="explanation" markdown>
