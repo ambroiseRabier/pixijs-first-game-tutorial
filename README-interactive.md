@@ -124,9 +124,9 @@ Each step is tagged, click on the title to get to the state of the code at start
 [4]: https://github.com/pixijs/pixi.js
 </div>
 
-<div class="do" markdown>
+<div class="do" style="font-size: larger;" markdown>
 
-[It is recommended you skip the following part][#1-setup-scene]
+/!\ [It is recommended you skip the following part](#1-setup-scene) /!\
 
 </div>
 
@@ -135,7 +135,7 @@ Each step is tagged, click on the title to get to the state of the code at start
 
 <div class="explanation" markdown>
 
-You can use a [CDN][https://github.com/pixijs/pixi.js?utm_source=html5weekly#cdn-install-via-cdnjs] install instead of npm and typescript. It is good to know it can be as simple as that.
+You can use a [CDN](https://github.com/pixijs/pixi.js?utm_source=html5weekly#cdn-install-via-cdnjs) install instead of npm and typescript. It is good to know it can be as simple as that.
 
 </div>
 
