@@ -340,6 +340,7 @@ If you build now, you will end up with a `bundle.js` inside `dist` folder, that 
 npm run build
 ```
 
+Note that webpack does not clean your `dist` folder before building. This is not an issue as it will override needed files anyway. On linus you could replace above npm script with `rm -rf ./dist && npm run build`. I don't remember how you can do it on windows. You can also, most probably do it trough webpack configuration.
 
 @See https://github.com/webpack/webpack-dev-server
 @See https://webpack.js.org/configuration/dev-server/#devserver
@@ -407,6 +408,8 @@ Open `http://localhost:8080/`, and check your console that you have a log that i
 
 ## 1. Setup stage
 
+The stage, or scene as it is called in Unity, is the main container of the game.
+
 If you have skipped the previous part, download the project with:
 
 ```sh
@@ -446,26 +449,35 @@ const app = new Application({
 ## 2. Display a sprite
 
 <div class="explanation" markdown>
+
   Sprite: todo: show the inheritance shema, the base object is some kind of transform like in unity. sprite have some method in bonus. It is used to display a visual (spritesheet too right?).
+
 </div>
 
-Let's create an asset folder:
-```sh
-mkdir assets
-```
+<div class="explanation" markdown>
 
-There is plenty of free assets you can find on the internet, you should be looking into conditions of use, licence before using them.
-This matter most if you publish your game openly on the internet, or if you make money out of your game.
+You could create an `assets` folder, it allow to decuple the hierarchy of your code directory form the hierarchy directory of the `assets`. This can be useful to allow your game artist to just organize himself however he like, and quickly update the assets without having any conflicts, with the way developers organize their code. If you are both game artist and developer, like on this tutorial, it will be easier to have only one directory hirearchy.
+
+There is plenty of free assets you can find on the internet, you should be looking into conditions of use, licence before using them. Especially if you make money out of your game, or if you publish your game openly on the internet.
+
+Mixing the tests, assets and scripts together is frequent nowadays, it is a angular2+ guidelines by the way. It make thing easier to find and to scale.
+
+If you want to proceed in that way and you work with a game artist, make sure to communicate with him.
+
+</div>
 
 I will be using this png for my character:
 https://www.pinclipart.com/pindetail/obJhJJ_svg-royalty-free-library-fighter-clipart-spaceship-spaceship/#
 
-Download and rename it `spaceship.png` in the assets folder.
+Download and rename it `spaceship.png`, put it in `src` folder.
 
-Webpack is not configured to load images, on CDN install, it would be all.
+Webpack need to be configured to add images in the `dist` folder.
 
-Add to webpack.config.js:
+Add to `webpack.config.js`:
 ```js
+module.exports = {
+  module: {
+    rules: [
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
         loader: 'file-loader',
@@ -473,11 +485,44 @@ Add to webpack.config.js:
           name: '[name].[ext]',
         }
       }
+    },
+  ]
+}
 ```
 
-You can now do `import '../assets/spaceship.png';` and `spaceship.png` will appear in `build/dist` on `npm run build`. (not in `build/dist/assets` folder) 
+<div class="explanation" markdown>
 
-We can make this better. Add a file named `global.d.ts` in `src` with content:
+A little explanation on `name: '[name].[ext]'`, because `[path]` is missing, image that are in `src` folder will be in `dist` folder instead of `dist/src` folder. It is fine for this tutorial, but you have a file with the same name and extension in different folder, I suppose this would conflict. You can find the necessary informations in the documentation or internet if this happen to you later.
+
+</div>
+
+
+For webpack to add the image into the `dist` folder, it need to be used somewhere, add `import './spaceship.png';` inside `index.ts`. `spaceship.png` will appear in `build/dist` when running `npm run build`. Unused file are not bundled automatically, handy.
+
+Restart your development server (`npm start`), and open http://localhost:8080/spaceship.png, you should see the image.
+
+We can make this better, change your `index.ts` so that you have:
+```ts
+import './index.html';
+import {Application, Sprite} from 'pixi.js';
+import spaceship from './spaceship.png';
+
+// The application will create a renderer using WebGL, if possible,
+// with a fallback to a canvas render. It will also setup the ticker
+// and the root stage PIXI.Container
+const app = new Application();
+
+// The application will create a canvas element for you that you
+// can then insert into the DOM
+document.body.appendChild(app.view);
+
+app.stage.addChild(Sprite.from(spaceship));
+```
+
+`spaceship` will have for value a string containing the path to the file. If it doesn't find it, you get an error at compile time, instead of discovering it in game.
+
+Typescript will complain `Cannot find module './spaceship.png'`, let's fix that:
+Add a file named `global.d.ts` in `src` with content:
 ```ts
 declare module "*.jpg" {
   const value: string;
@@ -491,25 +536,19 @@ declare module "*.png" {
 // you can add more when needed
 ```
 
-It will allow to do this:
-```ts
-import spaceship from '../assets/spaceship.png';
-app.stage.addChild(PIXI.Sprite.from(spaceship));
-```
 
-Nowadays, it is frequent to see the assets being mixed with the scripts using it. If you have a game artist with you, you want to discuss it with him. 
-It can make it harder for them to update their assets, they often copy paste a folder of them containing all the usable assets, 
-with a folder hierarchy that if 100% into their hands.
+<div class="explanation" markdown>
 
-However, if you are alone, it will probably be easier to mix thing up by module. Move spaceship.png into src, and remove assets folder. 
-It won't make much a difference for a very small game. But when you start adding subfolder, more files, classes, it will help you stay organized.
+`.d.ts` file are typings information only files. Wht we have added allow Typescript to know that this kind of import is ok. To be clear, you could have added on the line above the import `// @ts-ignore`, and it would still have worked.
 
-```ts
-import spaceship from './spaceship.png';
-```
+</div>
+
 
 @Src https://stackoverflow.com/questions/37671342/how-to-load-image-files-with-webpack-file-loader
 @Src https://stackoverflow.com/questions/36148639/webpack-not-able-to-import-images-using-express-and-angular2-in-typescript
+@Src https://webpack.js.org/loaders/file-loader/
+
+
 
 ##
 
