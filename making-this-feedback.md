@@ -17,4 +17,4 @@ a493f4fb7b50730911dc697c573c9842e0d9fe79 refs/tags/5-repeat-spawn
 a0cb1fd50f476cd0aee60cbfdc9e95f34fbf3151 refs/tags/6-destroy-obstacle
 b8b7eec78d27f0b3b65cdf4eb665abac821a6f44 refs/tags/7-restart
 ```
-Second pass start `ac26ad8154bb5b801539a78647cfb76a82356a69`.
+Second pass start `10179e98ed4c70fdcac4d579400482f703406a40`.

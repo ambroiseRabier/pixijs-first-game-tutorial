@@ -1,7 +1,7 @@
 <style>
 /* Studying vs Working */
 .explanation {
-  color: red;
+  color: darkorange;
 }
 .action {
   color: red;
@@ -90,23 +90,6 @@ Each step is tagged, click on the title to get to the state of the code at start
 
 ## 0. Setup project
 
-<div class="teacher-note" markdown>
-
-What the student should be able to do afterward:
-- Setup a project from zero with npm, git, pixiJS, typescript.
-
-What student should understand:
-- What canvas and WebGL API is, what is better.
-- What canvas html tag is.
-- What pixijs is.
-
-What student will do:
-- Use npm or use CDN to install pixijs.
-- Use pixijs to add a canvas/WebGL in a chosen html tag.
-- Check that it work by logging PixiJS API (PixiJS is installed, your main script is linked to the index.html page).
-
-</div>
-
 <div class="explanation vocabulary" markdown>
 
 [Canvas HTML tag][0]: 
@@ -143,13 +126,7 @@ What student will do:
 
 <div class="do" markdown>
 
-It is recommended you skip the following part and download the project from the start of next step:
-
-```sh
-git clone --branch <tag_name> <repo_url> (todo)
-```
-
-[Skip to next Step](todo_link_to_next_step)
+[It is recommended you skip the following part][#1-setup-scene]
 
 </div>
 
@@ -328,6 +305,14 @@ verify that you can build and start without errors.
 
 
 ## 1. Setup scene
+
+If you have skipped the previous part, download the project with:
+
+```sh
+git clone --branch 1-setup-scene git@github.com:ambroiseRabier/pixijs-first-game-tutorial.git
+```
+
+---
 
 Create the scene/stage by adding this code:
 ```typescript
