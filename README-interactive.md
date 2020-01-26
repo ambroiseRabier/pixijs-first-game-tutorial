@@ -550,37 +550,73 @@ declare module "*.png" {
 
 
 
-##
+## 3. Fixing sprite
 
-We want to resize the sprite, and turn it 90°. It should be the image itself that should be fixed by the game artist, so that the game artist keep full control and correct feedback over what he is doing.
+We want to resize the sprite, and turn it 90°. Best would be to have the image fixed by the game artist. This allow him to keep full control of his assets, and have a correct feedback over what how his work look in game.
 We are doing it for pedagogic purpose.
 
+index.ts
 ```ts
-const sprite = PIXI.Sprite.from(spaceship);
+import './index.html';
+import {Application, Sprite, Point} from 'pixi.js';
+import spaceshipPng from './spaceship.png';
+
+
+// The application will create a renderer using WebGL, if possible,
+// with a fallback to a canvas render. It will also setup the ticker
+// and the root stage PIXI.Container
+const app = new Application();
+
+// The application will create a canvas element for you that you
+// can then insert into the DOM
+document.body.appendChild(app.view);
+
+const player = Sprite.from(spaceshipPng);
 
 // Setup the position of the sprite
-sprite.x = app.renderer.width / 2;
-sprite.y = app.renderer.height / 2;
+player.x = app.renderer.width / 2;
+player.y = app.renderer.height / 2;
 
 // Rotate around the center
-sprite.anchor.x = 0.5;
-sprite.anchor.y = 0.5;
+player.anchor.x = 0.5;
+player.anchor.y = 0.5;
 
 // Use radian, not degrees.
-sprite.rotation = -Math.PI /2;
-sprite.scale = new Point(0.15, 0.15);
+player.rotation = -Math.PI /2;
+player.scale = new Point(0.15, 0.15);
 
 
-app.stage.addChild(sprite);
+app.stage.addChild(player);
 ```
 @Src https://github.com/pixijs/pixi.js?utm_source=html5weekly#basic-usage-example
 
-anchor is used for rotation and ? (!= origin) (does it move sprite?)
-Rotation is in radian, not degrees.
-You can also note, that the sprite is a bit too detailed for his small size I am giving him.
+`anchor` property i used for as roation center. Rotation is in radian, not degree. You can also note that the sprite is a bit to detailed for the small size I have given it.
+
+You can make a function to make it a bit cleaner.
+```ts
+function createPlayer(): Sprite {
+  let _player = Sprite.from(spaceshipPng);
+
+  // Setup the position of the sprite
+  _player.x = app.renderer.width / 2;
+  _player.y = app.renderer.height / 2;
+
+  // Rotate around the center
+  _player.anchor.x = 0.5;
+  _player.anchor.y = 0.5;
+
+  // Use radian, not degrees.
+  _player.rotation = -Math.PI /2;
+  _player.scale = new Point(0.15, 0.15);
+
+  return _player;
+}
+
+const player = createPlayer();
+```
 
 
-## 3. Gameloop
+## 4. Gameloop
 <div class="teacher-note" markdown>
   Do:
   - Modify a sprite state.
@@ -597,7 +633,7 @@ app.ticker.add(() => {
 
 There is also `requestAnimationFrame` and `setInterval`. Pixijs Ticker class is using the first one underhood.
 
-## 4. Inputs
+## 5. Inputs
 
 ```ts
 let speed = new Point();
@@ -676,7 +712,7 @@ window.addEventListener('keyup', (event: KeyboardEvent) => {
 
 </div> 
 
-## 4. Spawn obstacles
+## 6. Spawn obstacles
 
 ```ts
 type radian = number;
@@ -692,11 +728,11 @@ const newRock = makeRock(new Point(app.renderer.width/2, app.renderer.height/2),
 app.stage.addChild(newRock);
 ```
 
-## 5. Repeat spawn
+## 7. Repeat spawn
 
 the game is gonna be very slow if we do not destroy them.
 
-## 6. Destroy obstacles
+## 8. Destroy obstacles
 
 Garbage collector. remove from scene, and kill any reference.
 
@@ -714,4 +750,4 @@ this version is better then `&&` version, because it does not try every statemen
 Nothing displaying ? of course, you have to make sure they can spawn and enter screen.
 they should be destroyed when they are leaving the screen, not before they entered. I chose to use a flag bool to track when they entered at least once the screen.
 
-## 7. Restart
+## 9. Restart

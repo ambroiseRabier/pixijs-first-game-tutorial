@@ -18,3 +18,18 @@ a0cb1fd50f476cd0aee60cbfdc9e95f34fbf3151 refs/tags/6-destroy-obstacle
 b8b7eec78d27f0b3b65cdf4eb665abac821a6f44 refs/tags/7-restart
 ```
 Second pass start `10179e98ed4c70fdcac4d579400482f703406a40`.
+
+## Journal
+
+First pass, I started making/learning/writing this this pixiJS app. 
+Then it fell off and on the part that did not need much explanation I just did something that worked.
+For second pass, I preferred not to have multiple folder giving a different state of the project, as you would often have seen.
+Because it does not give an accurate representation of the project combined with the configuration part of npm/ts/webpack.
+I tough of rebasing and modifying previous commits, but, I would lose informations, it would be complex, and exactly knowing what to put 
+between which commit would be hell quickly if I was to make substantial changes.
+Finally I decided to just restart the project in the same repository, keeping my git history, and testing my own tutorial against myself.
+This have proven rather successful.
+I also made a hard copy of the latest state of my project into another folder and opened it with another webstorm window. Instead of relying on
+github, that would have been to slow to quickly compare both projects. Why is it useful? there are some change in configuration that I have done in 
+the middle of the project, but that should be there in the first step.
+
