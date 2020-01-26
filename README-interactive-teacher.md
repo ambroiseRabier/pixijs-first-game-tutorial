@@ -90,10 +90,12 @@ What student will do:
 
 </div>
 
-## 3. Gameloop
+## 3. Fixing sprite
+
+## 4. Gameloop
 <div class="teacher-note" markdown>
   What the student should be able to do afterward:
-  - Use gameloop to make a continuous change to a sprite.
+    - Use gameloop to make a continuous change to a sprite.
   
   What student should understand:
     - In the gameloop function, you are updating state of elements, and render happens at the end.
@@ -105,7 +107,7 @@ What student will do:
 
 </div>
 
-## 4. Inputs
+## 5. Inputs
 <div class="teacher-note" markdown>
   What the student should be able to do afterward:
     - Capture user inputs and translate them into visible change.
@@ -159,7 +161,7 @@ You get something that work for one input, but if you have many inputs, you get 
 Diagonal inputs (challenge is you cannot have an event with both inputs at time, so you have to keep track of what keys are actually down)
 </div>
 
-## 4. Spawn obstacles
+## 6. Spawn obstacles
 <div class="teacher-note" markdown>
   What the student should be able to do afterward:
     x
@@ -173,7 +175,7 @@ Diagonal inputs (challenge is you cannot have an event with both inputs at time,
     Spawn an obstacle using what you have learned at 2.
 </div>
 
-## 5. Repeat spawn
+## 7. Repeat spawn
 
 <div class="teacher-note" markdown>
   What the student should be able to do afterward:
@@ -191,7 +193,7 @@ Diagonal inputs (challenge is you cannot have an event with both inputs at time,
 3. Using `app.renderer.height` and `app.renderer.width`, spawn the rock outside the map (not too far outside).
 </div>
 
-## 6. Destroy obstacles
+## 8. Destroy obstacles
 
 <div class="teacher-note" markdown>
   What the student should be able to do afterward:
@@ -207,7 +209,7 @@ Diagonal inputs (challenge is you cannot have an event with both inputs at time,
 When obstacle is leaving the map, and is not visible anymore to the player, destroy it.
 </div>
 
-## 7. Restart
+## 9. Restart
 
 <div class="teacher-note" markdown>
   What the student should be able to do afterward:

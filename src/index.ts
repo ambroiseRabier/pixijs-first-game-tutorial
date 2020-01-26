@@ -33,3 +33,8 @@ function createPlayer(): Sprite {
 const player = createPlayer();
 
 app.stage.addChild(player);
+
+app.ticker.add(() => {
+  // each frame we spin the bunny around a bit
+  player.rotation += 0.01;
+});

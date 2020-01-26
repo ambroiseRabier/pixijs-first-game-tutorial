@@ -617,21 +617,17 @@ const player = createPlayer();
 
 
 ## 4. Gameloop
-<div class="teacher-note" markdown>
-  Do:
-  - Modify a sprite state.
-  - Re-render the scene.
-</div>
 
 ```ts
 app.ticker.add(() => {
   // each frame we spin the bunny around a bit
   sprite.rotation += 0.01;
 });
-
 ```
+@Src https://github.com/pixijs/pixi.js?utm_source=html5weekly#basic-usage-example
 
 There is also `requestAnimationFrame` and `setInterval`. Pixijs Ticker class is using the first one underhood.
+
 
 ## 5. Inputs
 
