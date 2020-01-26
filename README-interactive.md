@@ -406,7 +406,7 @@ This will create a server watching your file and live reloading your webpage on 
 
 Open `http://localhost:8080/`, and check your console that you have a log that is not undefined. Should start with `Object {`.
 
-## 1. Setup stage
+## [1. Setup stage](https://github.com/ambroiseRabier/pixijs-first-game-tutorial/tree/1-setup-stage)
 
 The stage, or scene as it is called in Unity, is the main container of the game.
 
@@ -446,7 +446,7 @@ const app = new Application({
 ```
 
 
-## 2. Display a sprite
+## [2. Display a sprite](https://github.com/ambroiseRabier/pixijs-first-game-tutorial/tree/2-display-sprite)
 
 <div class="explanation" markdown>
 
@@ -550,7 +550,7 @@ declare module "*.png" {
 
 
 
-## 3. Fixing sprite
+## [3. Fixing sprite](https://github.com/ambroiseRabier/pixijs-first-game-tutorial/tree/3-fixing-sprite)
 
 We want to resize the sprite, and turn it 90°. Best would be to have the image fixed by the game artist. This allow him to keep full control of his assets, and have a correct feedback over what how his work look in game.
 We are doing it for pedagogic purpose.
@@ -616,7 +616,7 @@ const player = createPlayer();
 ```
 
 
-## 4. Gameloop
+## [4. Gameloop](https://github.com/ambroiseRabier/pixijs-first-game-tutorial/tree/4-gameloop)
 
 ```ts
 app.ticker.add(() => {
@@ -629,7 +629,7 @@ app.ticker.add(() => {
 There is also `requestAnimationFrame` and `setInterval`. Pixijs Ticker class is using the first one underhood.
 
 
-## 5. Inputs
+## [5. Inputs](https://github.com/ambroiseRabier/pixijs-first-game-tutorial/tree/5-inputs)
 
 You can remove `sprite.rotation += 0.01;`, we won't need it.
 
@@ -748,18 +748,56 @@ Notice that:
 </div>
 
 
-## 6. Multiple inputs
+## [6. Multiple inputs](https://github.com/ambroiseRabier/pixijs-first-game-tutorial/tree/6-multiple-inputs)
 
 <div class="exercice" markdown>
-Give the loop and the how to listen to input keydown and keyup, how do you make the character move ? 
-tip: make a speed variable. of type Point
-</div> 
 
-<div class="exercice" markdown>
-Diagonal inputs (challenge is you cannot have an event with both inputs at time, so you have to keep track of what keys are actually down)
+Now let's make the character able to move in 4 directions. You can also chose to add diagonal inputs, 8 directions.
+You will need:
+- 'ArrowUp'
+- 'ArrowDown'
+- 'ArrowLeft'
+- 'ArrowRight'
+
+
+<details  class="tip" mardown>
+  <summary>Tip 1</summary>
+
+You should keep track of what keys are currently pressed.
+```ts
+const keysPressed: {[key: string]: number}  = {
+  'ArrowUp': 0,
+  'ArrowDown': 0,
+  'ArrowLeft': 0,
+  'ArrowRight': 0
+};
+```
+There is a practical reason to store what keys are pressed, as number (0 or 1), instead of boolean (false or true).
+
+</details>
+
+<details  class="tip" mardown>
+  <summary>Tip 2</summary>
+
+Here is how you make use of the previous dictonnary we made.
+```ts
+window.addEventListener('keydown', (event: KeyboardEvent) => {
+  keysPressed[event.key] = 1;
+});
+
+window.addEventListener('keyup', (event: KeyboardEvent) => {
+  keysPressed[event.key] = 0;
+});
+```
+
+</details>
+
+<details  class="solution" mardown>
+  <summary>Solution</summary>
+
 
 ```ts
-let speed = new Point();
+let playerSpeed = new Point();
 
 const keysPressed: {[key: string]: number}  = {
   'ArrowUp': 0,
@@ -767,24 +805,18 @@ const keysPressed: {[key: string]: number}  = {
   'ArrowLeft': 0,
   'ArrowRight': 0
 };
-const keyToSpeed: {[key: string]: Point} = {
-  'ArrowUp': new Point(0,-1),
-  'ArrowDown': new Point(0,1),
-  'ArrowLeft': new Point(-1,0),
-  'ArrowRight': new Point(1,0)
-};
+
 
 // Listen for frame updates
 app.ticker.add(() => {
-  speed = new Point(
+  playerSpeed = new Point(
       keysPressed['ArrowRight'] - keysPressed['ArrowLeft'],
       keysPressed['ArrowDown'] - keysPressed['ArrowUp']
   );
   // each frame we spin the bunny around a bit
-  sprite.position.x += speed.x;
-  sprite.position.y += speed.y;
+  player.position.x += playerSpeed.x;
+  player.position.y += playerSpeed.y;
 });
-
 
 
 window.addEventListener('keydown', (event: KeyboardEvent) => {
@@ -796,7 +828,25 @@ window.addEventListener('keyup', (event: KeyboardEvent) => {
 });
 ```
 
+</details>
+
 </div> 
+
+<div class="explanation" markdown>
+
+You may notice that if you keep pressed 3 arrow keys, and press the fourth one, the eventi s not triggered, this is probably not an issue with your code:
+https://stackoverflow.com/questions/18155457/javascript-keydown-event-not-triggered-when-multiple-keys-are-held-down
+
+You can check for yourself with this snippet:
+```ts
+  if (Object.values(keysPressed).reduce((a,b) => a+b) == 4) { // 3 is ok, but 4 will not appear with arrow keys
+    console.log('4 keys pressed regitered');
+  }
+```
+
+You could set up a speed multiplier to make the player faster or slower.
+
+</div>
 
 ## 7. Spawn obstacles
 

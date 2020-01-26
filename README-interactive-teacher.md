@@ -157,11 +157,22 @@ You get something that work for one input, but if you have many inputs, you get 
 
 </div>
 
+
+## 6. Multiple inputs
+
 <div class="exercice" markdown>
 Diagonal inputs (challenge is you cannot have an event with both inputs at time, so you have to keep track of what keys are actually down)
 </div>
 
-## 6. Multiple inputs
+You might be using this bellow, or not.
+```ts
+const keyToSpeed: {[key: string]: Point} = {
+  'ArrowUp': new Point(0,-1),
+  'ArrowDown': new Point(0,1),
+  'ArrowLeft': new Point(-1,0),
+  'ArrowRight': new Point(1,0)
+};
+```
 
 
 ## 7. Spawn obstacles

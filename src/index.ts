@@ -34,21 +34,32 @@ const player = createPlayer();
 
 app.stage.addChild(player);
 
-let playerSpeed: Point = new Point(0,0);
+let playerSpeed = new Point();
 
+const keysPressed: {[key: string]: number}  = {
+  'ArrowUp': 0,
+  'ArrowDown': 0,
+  'ArrowLeft': 0,
+  'ArrowRight': 0
+};
+
+
+// Listen for frame updates
 app.ticker.add(() => {
+  playerSpeed = new Point(
+      keysPressed['ArrowRight'] - keysPressed['ArrowLeft'],
+      keysPressed['ArrowDown'] - keysPressed['ArrowUp']
+  );
+  // each frame we spin the bunny around a bit
   player.position.x += playerSpeed.x;
   player.position.y += playerSpeed.y;
 });
 
+
 window.addEventListener('keydown', (event: KeyboardEvent) => {
-  if (event.key === 'ArrowUp') {
-    playerSpeed = new Point(0,-1);
-  }
+  keysPressed[event.key] = 1;
 });
 
 window.addEventListener('keyup', (event: KeyboardEvent) => {
-  if (event.key === 'ArrowUp') {
-    playerSpeed = new Point(0,0);
-  }
+  keysPressed[event.key] = 0;
 });
