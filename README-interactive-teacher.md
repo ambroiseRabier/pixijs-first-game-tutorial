@@ -175,7 +175,7 @@ const keyToSpeed: {[key: string]: Point} = {
 ```
 
 
-## 7. Spawn obstacles
+## 7. Spawn obstacle
 <div class="teacher-note" markdown>
   What the student should be able to do afterward:
     x
@@ -189,26 +189,42 @@ const keyToSpeed: {[key: string]: Point} = {
     Spawn an obstacle using what you have learned at 2.
 </div>
 
-## 8. Repeat spawn
 
+## 8. Move obstacle towards player
 <div class="teacher-note" markdown>
   What the student should be able to do afterward:
-    - Use setInterval
     - Use a unit vector
   What student should understand:
   
   What student will do:
+    - Use gameloop and unit vector to move the obstacle towards the player.
+</div>
 
+<div class="exercice" markdown>
+Using a unit vector and the gameloop, make the rock move toward the player.
+</div>
+
+
+## 9. Repeat spawn randomly outside
+<div class="teacher-note" markdown>
+  What the student should be able to do afterward:
+    - Use setInterval
+  What student should understand:
+  
+  What student will do:
+    - Repeat the spawn
 </div>
 
 <div class="exercice" markdown>
 1. Using setInterval, spawn a randomly on the map every X seconds.
-2. Using a unit vector and the gameloop, make the rock move toward the player.
-3. Using `app.renderer.height` and `app.renderer.width`, spawn the rock outside the map (not too far outside).
+2. Spawn obstacles randomly inside the camera view.
+3. Spawn obstacle randomly outside camera view.
 </div>
 
-## 9. Destroy obstacles
+Using `app.renderer.height` and `app.renderer.width`, spawn the rock outside the map (not too far outside).
 
+
+## 10. Destroy obstacles
 <div class="teacher-note" markdown>
   What the student should be able to do afterward:
     - Make an element eligible for garbage collector.
@@ -223,8 +239,7 @@ const keyToSpeed: {[key: string]: Point} = {
 When obstacle is leaving the map, and is not visible anymore to the player, destroy it.
 </div>
 
-## 10. Restart
-
+## 11. Restart
 <div class="teacher-note" markdown>
   What the student should be able to do afterward:
     x

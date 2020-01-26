@@ -848,27 +848,44 @@ You could set up a speed multiplier to make the player faster or slower.
 
 </div>
 
-## 7. Spawn obstacles
+
+## [7. Spawn obstacle](https://github.com/ambroiseRabier/pixijs-first-game-tutorial/tree/7-spawn-obstacle)
+
+<div class="exercice" markdown>
+
+You can use what you have learned at [step 2](#2-display-sprite) to display an obstacle on stage (not on the player).
+
+You can get the image [here](https://github.com/ambroiseRabier/pixijs-first-game-tutorial/blob/b8b7eec78d27f0b3b65cdf4eb665abac821a6f44/src/rock.png), the asset is free for personal use.
+
+<details  class="solution" mardown>
+  <summary>Solution</summary>
 
 ```ts
-type radian = number;
+import obstaclePng from './obstacle.png';
 
-function makeRock(position: Point, direction: radian): Sprite {
-  const rock = PIXI.Sprite.from(rockImg);
-  rock.position = position;
-  rock.rotation = direction;
-  return rock;
+function createObstacle(): Sprite {
+  let _obstacle = PIXI.Sprite.from(obstaclePng);
+  _obstacle.position = new Point(app.renderer.width/2, 0);
+  return _obstacle;
 }
 
-const newRock = makeRock(new Point(app.renderer.width/2, app.renderer.height/2), 0);
-app.stage.addChild(newRock);
+const obstacle = createObstacle();
+app.stage.addChild(obstacle);
 ```
+</details>
 
-## 8. Repeat spawn
+</div>
+
+
+
+## [8. Move obstacle towards player](https://github.com/ambroiseRabier/pixijs-first-game-tutorial/tree/8-move-obstacle-towards-player)
+
+
+## 9. Repeat spawn randomly outside
 
 the game is gonna be very slow if we do not destroy them.
 
-## 9. Destroy obstacles
+## 10. Destroy obstacles
 
 Garbage collector. remove from scene, and kill any reference.
 
@@ -886,4 +903,22 @@ this version is better then `&&` version, because it does not try every statemen
 Nothing displaying ? of course, you have to make sure they can spawn and enter screen.
 they should be destroyed when they are leaving the screen, not before they entered. I chose to use a flag bool to track when they entered at least once the screen.
 
-## 10. Restart
+## 11. Restart
+
+
+## TEMP
+
+
+```ts
+type radian = number;
+
+function makeRock(position: Point, direction: radian): Sprite {
+  const rock = PIXI.Sprite.from(rockImg);
+  rock.position = position;
+  rock.rotation = direction;
+  return rock;
+}
+
+const newRock = makeRock(new Point(app.renderer.width/2, app.renderer.height/2), 0);
+app.stage.addChild(newRock);
+```
