@@ -34,7 +34,21 @@ const player = createPlayer();
 
 app.stage.addChild(player);
 
+let playerSpeed: Point = new Point(0,0);
+
 app.ticker.add(() => {
-  // each frame we spin the bunny around a bit
-  player.rotation += 0.01;
+  player.position.x += playerSpeed.x;
+  player.position.y += playerSpeed.y;
+});
+
+window.addEventListener('keydown', (event: KeyboardEvent) => {
+  if (event.key === 'ArrowUp') {
+    playerSpeed = new Point(0,-1);
+  }
+});
+
+window.addEventListener('keyup', (event: KeyboardEvent) => {
+  if (event.key === 'ArrowUp') {
+    playerSpeed = new Point(0,0);
+  }
 });

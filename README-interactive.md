@@ -631,34 +631,124 @@ There is also `requestAnimationFrame` and `setInterval`. Pixijs Ticker class is 
 
 ## 5. Inputs
 
-```ts
-let speed = new Point();
+You can remove `sprite.rotation += 0.01;`, we won't need it.
 
-// Listen for frame updates
+Here is a simple example:
+```ts
+window.addEventListener('keydown', (event: KeyboardEvent) => {
+  if (event.key === 'ArrowUp') {
+     player.position.y -= 25;
+  }
+});
+```
+
+`'keydown'` is the first event of a key. It iscalled right when you start pressing the key. 
+
+
+<div class="exercice" markdown>
+ 
+Time for some exercice. How would you make the sprite move only when you press up?
+There are tips bellow, do not hesitate to use them, it is up to you, how much self-discovery you want. What is important, is not to find the solution by yourself, but to be able to reproduce this solution later.
+
+
+<details  class="tip" mardown>
+  <summary>Tip 1</summary>
+
+You are going to need `'keyup'` event:
+```ts
+window.addEventListener('keyup', (event: KeyboardEvent) => {
+  if (event.key === 'ArrowUp') {
+  }
+});
+```
+
+</details>
+
+<details  class="tip" mardown>
+  <summary>Tip 2</summary>
+
+You need to use the gameloop.
+```ts
 app.ticker.add(() => {
-  // each frame we spin the bunny around a bit
-  sprite.position.x += speed.x;
-  sprite.position.y += speed.y;
+
 });
 
 window.addEventListener('keydown', (event: KeyboardEvent) => {
   if (event.key === 'ArrowUp') {
-    speed = new Point(0,-1);
   }
 });
 
 window.addEventListener('keyup', (event: KeyboardEvent) => {
   if (event.key === 'ArrowUp') {
-    speed = new Point(0,0);
   }
 });
 ```
 
-keydown happen once when you press, then after a second, it is reapeated. 
-Like when you press 0 key on notepad, and if you keep pressing it start writing a line of that character.
-keyup is when you release the key.
-there is also key event.
-You want your game to react on keydown, to be reactive to user inputs.
+</details>
+
+<details  class="tip" mardown>
+  <summary>Tip 3</summary>
+
+You need a playerSpeed variable.
+```ts
+let playerSpeed: Point = new Point(0,0);
+
+app.ticker.add(() => {
+
+});
+
+window.addEventListener('keydown', (event: KeyboardEvent) => {
+  if (event.key === 'ArrowUp') {
+  }
+});
+
+window.addEventListener('keyup', (event: KeyboardEvent) => {
+  if (event.key === 'ArrowUp') {
+  }
+});
+```
+
+</details>
+
+<details  class="solution" mardown>
+  <summary>Solution</summary>
+
+```ts
+let playerSpeed: Point = new Point(0,0);
+
+app.ticker.add(() => {
+  player.position.x += playerSpeed.x;
+  player.position.y += playerSpeed.y;
+});
+
+window.addEventListener('keydown', (event: KeyboardEvent) => {
+  if (event.key === 'ArrowUp') {
+    playerSpeed = new Point(0,-1);
+  }
+});
+
+window.addEventListener('keyup', (event: KeyboardEvent) => {
+  if (event.key === 'ArrowUp') {
+    playerSpeed = new Point(0,0);
+  }
+});
+```
+
+</details>
+
+</div>
+
+
+<div class="explanation" markdown>
+
+Notice that:
+- If you later happen to code a one time action on a key event, keep in mind to use `keydown` and not `keyup`, to react as fast as possible to the user.
+- You may have found out that keeping you key pressed, will, after a short time, be spamming `keydown` event.
+
+</div>
+
+
+## 6. Multiple inputs
 
 <div class="exercice" markdown>
 Give the loop and the how to listen to input keydown and keyup, how do you make the character move ? 
@@ -708,7 +798,7 @@ window.addEventListener('keyup', (event: KeyboardEvent) => {
 
 </div> 
 
-## 6. Spawn obstacles
+## 7. Spawn obstacles
 
 ```ts
 type radian = number;
@@ -724,11 +814,11 @@ const newRock = makeRock(new Point(app.renderer.width/2, app.renderer.height/2),
 app.stage.addChild(newRock);
 ```
 
-## 7. Repeat spawn
+## 8. Repeat spawn
 
 the game is gonna be very slow if we do not destroy them.
 
-## 8. Destroy obstacles
+## 9. Destroy obstacles
 
 Garbage collector. remove from scene, and kill any reference.
 
@@ -746,4 +836,4 @@ this version is better then `&&` version, because it does not try every statemen
 Nothing displaying ? of course, you have to make sure they can spawn and enter screen.
 they should be destroyed when they are leaving the screen, not before they entered. I chose to use a flag bool to track when they entered at least once the screen.
 
-## 9. Restart
+## 10. Restart

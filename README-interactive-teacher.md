@@ -161,7 +161,10 @@ You get something that work for one input, but if you have many inputs, you get 
 Diagonal inputs (challenge is you cannot have an event with both inputs at time, so you have to keep track of what keys are actually down)
 </div>
 
-## 6. Spawn obstacles
+## 6. Multiple inputs
+
+
+## 7. Spawn obstacles
 <div class="teacher-note" markdown>
   What the student should be able to do afterward:
     x
@@ -175,7 +178,7 @@ Diagonal inputs (challenge is you cannot have an event with both inputs at time,
     Spawn an obstacle using what you have learned at 2.
 </div>
 
-## 7. Repeat spawn
+## 8. Repeat spawn
 
 <div class="teacher-note" markdown>
   What the student should be able to do afterward:
@@ -193,7 +196,7 @@ Diagonal inputs (challenge is you cannot have an event with both inputs at time,
 3. Using `app.renderer.height` and `app.renderer.width`, spawn the rock outside the map (not too far outside).
 </div>
 
-## 8. Destroy obstacles
+## 9. Destroy obstacles
 
 <div class="teacher-note" markdown>
   What the student should be able to do afterward:
@@ -209,7 +212,7 @@ Diagonal inputs (challenge is you cannot have an event with both inputs at time,
 When obstacle is leaving the map, and is not visible anymore to the player, destroy it.
 </div>
 
-## 9. Restart
+## 10. Restart
 
 <div class="teacher-note" markdown>
   What the student should be able to do afterward:
