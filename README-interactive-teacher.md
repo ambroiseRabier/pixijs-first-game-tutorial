@@ -189,8 +189,42 @@ const keyToSpeed: {[key: string]: Point} = {
     Spawn an obstacle using what you have learned at 2.
 </div>
 
+## 8. Refractor obstacle
+<div class="teacher-note" markdown>
+  What the student should be able to do afterward:
+    - Separate an object into his file, OOP.
+  What student should understand:
+    - Hierarchy of inheritance in PixiJS.
+  What student will do:
+    - 
+</div>
 
-## 8. Move obstacle towards player
+This bellow could be a valid choice:
+
+src/obstacle.ts
+```ts
+import {Point, Sprite, Container} from 'pixi.js';
+import obstaclePng from './obstacle.png';
+
+export class Obstacle extends Container {
+  private readonly sprite: Sprite;
+
+  constructor(rendererWidth: number) {
+    super();
+    this.sprite = Sprite.from(obstaclePng);
+    this.sprite.scale = new Point(0.3, 0.3);
+    this.sprite.position = new Point(rendererWidth/2, 0);
+  }
+}
+```
+```ts
+const obstacle = new Obstacle(app.renderer.width);
+app.stage.addChild(obstacle);
+```
+
+We could make a GameObject class, and call update on every GameObject class.
+
+## 9. Move obstacle towards player
 <div class="teacher-note" markdown>
   What the student should be able to do afterward:
     - Use a unit vector
@@ -205,7 +239,7 @@ Using a unit vector and the gameloop, make the rock move toward the player.
 </div>
 
 
-## 9. Repeat spawn randomly outside
+## 10. Repeat spawn randomly outside
 <div class="teacher-note" markdown>
   What the student should be able to do afterward:
     - Use setInterval
@@ -224,7 +258,7 @@ Using a unit vector and the gameloop, make the rock move toward the player.
 Using `app.renderer.height` and `app.renderer.width`, spawn the rock outside the map (not too far outside).
 
 
-## 10. Destroy obstacles
+## 11. Destroy obstacles
 <div class="teacher-note" markdown>
   What the student should be able to do afterward:
     - Make an element eligible for garbage collector.
@@ -239,7 +273,7 @@ Using `app.renderer.height` and `app.renderer.width`, spawn the rock outside the
 When obstacle is leaving the map, and is not visible anymore to the player, destroy it.
 </div>
 
-## 11. Restart
+## 12. Restart
 <div class="teacher-note" markdown>
   What the student should be able to do afterward:
     x
@@ -248,3 +282,7 @@ When obstacle is leaving the map, and is not visible anymore to the player, dest
   What student will do:
     reset the game
 </div>
+
+## NTH?
+
+We could make a GameObject class, and call update on every GameObject class. Independently from what it is used for.

@@ -877,15 +877,88 @@ app.stage.addChild(obstacle);
 </div>
 
 
+## [8. Refractor obstacle](https://github.com/ambroiseRabier/pixijs-first-game-tutorial/tree/8-refractor-obstacle)
 
-## [8. Move obstacle towards player](https://github.com/ambroiseRabier/pixijs-first-game-tutorial/tree/8-move-obstacle-towards-player)
+<div class="explanation" markdown>
+
+A little information on PixiJS inherintance shema. I haven't found a shema of pixiJS inheritance shema (if someone find one, I would add it here). But it is quite similar to Flash:
+
+(todo, make a copy of the file locally)
+![inheritance shema of flash](https://blog.berniesumption.com/wp-content/uploads/2010/10/DisplayObject_subclasses.jpg)
+
+By looking into the source (ctrl-b on Webstorm on Sprite class). You can find out that:
+
+PIXI.Sprite <- PIXI.Container <- PIXI.DisplayObject
+
+Note that DisplayObject is an abtract class.
+
+</div>
+
+Let's separate obstacle code into his own file.
+
+```sh
+touch src/obstacle.ts
+```
+
+src/obstacle.ts
+```ts
+import {Point, Sprite, Container} from 'pixi.js';
+import obstaclePng from './obstacle.png';
+
+export class Obstacle {
+  public readonly transform: Container = new Container();
+  private readonly sprite: Sprite;
+
+  constructor() {
+    this.sprite = Sprite.from(obstaclePng);
+    this.sprite.scale = new Point(0.3, 0.3);
+    this.transform.addChild(this.sprite);
+  }
+}
+```
+
+Remove `createObstacle` function.
+
+src/index.ts
+```ts
+const obstacle = new Obstacle();
+
+obstacle.transform.position = new Point(app.renderer.width/2, 0);
+
+app.stage.addChild(obstacle.transform);
+```
+
+Do not do `sprite.position = new Point(app.renderer.width/2, 0);`, this would also work, but gameplay related position changes will be applied to the `transform`, the `transform` has the position of the obstacle on the scene, and we do not want the position of the sprite to be `app.renderer.width/2` from his position. It might become easier to understand on the next step.
+
+<div class="explanation" markdown>
+
+This is slightly inspired from Unity. You could make use of inheriatnec `export class Obstacle extends Container` to allow you to do `app.stage.addChild(obstacle);`, this can be ok, but it will mix up your class Obstacle methods and fields with the Container methods and fields.
+We could give in parameter the stage, to allow Obstacle to addChild the sprite on the stage, or just make sprite public field. But by making `transform` public, we allow the main script to addChild our obstacle, and our Obstacle to handle his internal state himself (addChild his sprite).
+Note that there are more then one way to organize yourself.
+
+</div>
 
 
-## 9. Repeat spawn randomly outside
+## [9. Move obstacle towards player](https://github.com/ambroiseRabier/pixijs-first-game-tutorial/tree/9-move-obstacle-towards-player)
+
+<div class="exercice" markdown>
+
+
+<details  class="solution" mardown>
+  <summary>Solution</summary>
+
+
+
+</details>
+
+</div>
+
+
+## 10. Repeat spawn randomly outside
 
 the game is gonna be very slow if we do not destroy them.
 
-## 10. Destroy obstacles
+## 11. Destroy obstacles
 
 Garbage collector. remove from scene, and kill any reference.
 
@@ -903,7 +976,7 @@ this version is better then `&&` version, because it does not try every statemen
 Nothing displaying ? of course, you have to make sure they can spawn and enter screen.
 they should be destroyed when they are leaving the screen, not before they entered. I chose to use a flag bool to track when they entered at least once the screen.
 
-## 11. Restart
+## 12. Restart
 
 
 ## TEMP

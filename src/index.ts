@@ -2,6 +2,7 @@ import './index.html';
 import {Application, Sprite, Point} from 'pixi.js';
 import spaceshipPng from './spaceship.png';
 import obstaclePng from './obstacle.png';
+import {Obstacle} from './obstacle';
 
 
 // The application will create a renderer using WebGL, if possible,
@@ -31,18 +32,13 @@ function createPlayer(): Sprite {
   return _player;
 }
 
-function createObstacle(): Sprite {
-  let _obstacle = Sprite.from(obstaclePng);
-  _obstacle.scale = new Point(0.3, 0.3);
-  _obstacle.position = new Point(app.renderer.width/2, 0);
-  return _obstacle;
-}
-
 const player = createPlayer();
-const obstacle = createObstacle();
+const obstacle = new Obstacle();
+
+obstacle.transform.position = new Point(app.renderer.width/2, 0);
 
 app.stage.addChild(player);
-app.stage.addChild(obstacle);
+app.stage.addChild(obstacle.transform);
 
 let playerSpeed = new Point();
 
