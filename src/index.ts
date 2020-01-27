@@ -32,16 +32,13 @@ function createPlayer(): Sprite {
   return _player;
 }
 
+const allObstacles: Obstacle[] = [];
 const player = createPlayer();
-const obstacle = new Obstacle();
-
-obstacle.transform.position = new Point(app.renderer.width/2, 0);
-obstacle.init(player.position);
 
 app.stage.addChild(player);
-app.stage.addChild(obstacle.transform);
 
 let playerSpeed = new Point();
+const playerSpeedMultiplier = 5;
 
 const keysPressed: {[key: string]: number}  = {
   'ArrowUp': 0,
@@ -58,9 +55,12 @@ app.ticker.add(() => {
       keysPressed['ArrowDown'] - keysPressed['ArrowUp']
   );
   // each frame we spin the bunny around a bit
-  player.position.x += playerSpeed.x;
-  player.position.y += playerSpeed.y;
-  obstacle.update();
+  player.position.x += playerSpeed.x * playerSpeedMultiplier;
+  player.position.y += playerSpeed.y * playerSpeedMultiplier;
+
+  for (let obstacle of allObstacles) {
+    obstacle.update();
+  }
 });
 
 
@@ -71,3 +71,37 @@ window.addEventListener('keydown', (event: KeyboardEvent) => {
 window.addEventListener('keyup', (event: KeyboardEvent) => {
   keysPressed[event.key] = 0;
 });
+
+function getObstacleSpawnPoint(): Point {
+  // spawn the obstacle outside of camera (stage == camera because we haven't moved it)
+  const sideChosen = Math.floor(Math.random() * 4); // 0, 1, 2, 3
+
+  // should be relative to obstacle width/height.
+  // But I will use an arbitrary value to make it easier.
+  // Also, while no ideal way to do it, this give a small start time for the player.
+  const right = app.renderer.width + 200;
+  const left = -200;
+  const top = -200;
+  const bottom = app.renderer.width - 200;
+
+  const startPositions = [
+    new Point(right, Math.random() * app.renderer.height),
+    new Point(left, Math.random() * app.renderer.height),
+    new Point(Math.random() * app.renderer.width, top),
+    new Point(Math.random() * app.renderer.width, bottom),
+  ];
+
+  const spawnPoint = startPositions[sideChosen];
+
+  return spawnPoint;
+}
+
+setInterval(() => {
+  const obstacle = new Obstacle();
+  const randomPos = getObstacleSpawnPoint();
+
+  obstacle.transform.position = randomPos;
+  obstacle.init(player.position);
+  app.stage.addChild(obstacle.transform);
+  allObstacles.push(obstacle);
+}, 1000);

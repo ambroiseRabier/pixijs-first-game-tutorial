@@ -1066,11 +1066,144 @@ You could also have left the `anchor` at `0`, and moved the `sprite` half his wi
 </div>
 
 
-## 10. Repeat spawn randomly outside
+## [10. Repeat spawn outside randomly](https://github.com/ambroiseRabier/pixijs-first-game-tutorial/tree/10-repeat-spawn-outside-randomly)
 
-the game is gonna be very slow if we do not destroy them.
+<div class="exercice" markdown>
 
-## 11. Destroy obstacles
+This step will be divided in three steps:
+1. Spawn the obstacle repetitivly inside the stage.
+2. Spawn the obstacle randomly inside the stage.
+3. Spawn the obstacle repetitivly outside the stage.
+
+To make a repetition, you can use a simple `setInterval` method (you can add it at the bottom of `index.ts` file.
+
+```ts
+setInterval(() => {
+  console.log('Every 1000ms I log.')
+}, 1000);
+```
+
+`setInterval` has some issues related to framerate, that I will not explain here. But probably in another, more advanced tutorial.
+
+<details class="tip" mardown>
+  <summary>Tip 1</summary>
+
+You already know how to spawn one obstacle, spawning multiple obstacles is not that different, you are going to need an array to keep track of your obstacles references.
+
+```ts
+const allObstacles: Obstacle[] = [];
+```
+
+```ts
+setInterval(() => {
+  // .. spawn a obstacle
+  // push the obstacle reference into allObstacles
+}, 1000);
+```
+
+</details>
+
+<details class="solution" mardown>
+  <summary>Solution 1</summary>
+
+```ts
+const allObstacles: Obstacle[] = [];
+const player = createPlayer();
+
+app.stage.addChild(player);
+
+// Listen for frame updates
+app.ticker.add(() => {
+  for (let obstacle of allObstacles) {
+    obstacle.update();
+  }
+});
+
+setInterval(() => {
+  const obstacle = new Obstacle();
+  obstacle.transform.position = new Point(app.renderer.width/2, 0);
+  obstacle.init(player.position);
+  app.stage.addChild(obstacle.transform);
+  allObstacles.push(obstacle);
+}, 1000);
+```
+
+When moving your player, the newly spawned obstacle should change direction.
+
+</details>
+
+<details class="tip" mardown>
+  <summary>Tip 2</summary>
+
+You can use `Math.random` function, that return a float between 0 (included) and 1 (excluded).
+
+</details>
+
+<details class="solution" mardown>
+  <summary>Solution 2</summary>
+
+```ts
+  const randomPos = new Point(
+    app.renderer.width * Math.random(),
+    app.renderer.height * Math.random()
+  );
+
+  obstacle.transform.position = randomPos;
+```
+
+</details>
+
+You may have noticed how terribly slow your player is. You can add a `const playerSpeedMultiplier: number;` constant, give it a default value you like.
+
+And modify your code so that you have:
+```ts
+  player.position.x += playerSpeed.x * playerSpeedMultiplier;
+  player.position.y += playerSpeed.y * playerSpeedMultiplier;
+```
+
+<details class="solution" mardown>
+  <summary>Solution 3</summary>
+
+```ts
+function getObstacleSpawnPoint(): Point {
+  // spawn the obstacle outside of camera (stage == camera because we haven't moved it)
+  const sideChosen = Math.floor(Math.random() * 4); // 0, 1, 2, 3
+
+  // should be relative to obstacle width/height.
+  // But I will use an arbitrary value to make it easier.
+  // Also, while no ideal way to do it, this give a small start time for the player.
+  const right = app.renderer.width + 200;
+  const left = -200;
+  const top = -200;
+  const bottom = app.renderer.width - 200;
+
+  const startPositions = [
+    new Point(right, Math.random() * app.renderer.height),
+    new Point(left, Math.random() * app.renderer.height),
+    new Point(Math.random() * app.renderer.width, top),
+    new Point(Math.random() * app.renderer.width, bottom),
+  ];
+
+  const spawnPoint = startPositions[sideChosen];
+
+  return spawnPoint;
+}
+```
+
+</details>
+
+</div>
+
+Note that your obstacle array length will keep growing as the obstacles are not removed. The game is gonna be very slow if we do not destroy them when they leave the screen. But this issue is an optimization issue, on a small game like this one, probably no user would ever notice. But with richer assets that use more memory space, this would quickly become an issue. We will address this issue later.
+
+
+## 11. Player collision
+
+## 12. Restart
+
+## 13. Score
+
+## 14. Destroy obstacles
 
 Garbage collector. remove from scene, and kill any reference.
 
@@ -1087,9 +1220,6 @@ this version is better then `&&` version, because it does not try every statemen
 
 Nothing displaying ? of course, you have to make sure they can spawn and enter screen.
 they should be destroyed when they are leaving the screen, not before they entered. I chose to use a flag bool to track when they entered at least once the screen.
-
-## 12. Restart
-
 
 ## TEMP
 
