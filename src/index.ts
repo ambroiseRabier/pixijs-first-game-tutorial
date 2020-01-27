@@ -36,6 +36,7 @@ const player = createPlayer();
 const obstacle = new Obstacle();
 
 obstacle.transform.position = new Point(app.renderer.width/2, 0);
+obstacle.init(player.position);
 
 app.stage.addChild(player);
 app.stage.addChild(obstacle.transform);
@@ -59,6 +60,7 @@ app.ticker.add(() => {
   // each frame we spin the bunny around a bit
   player.position.x += playerSpeed.x;
   player.position.y += playerSpeed.y;
+  obstacle.update();
 });
 
 

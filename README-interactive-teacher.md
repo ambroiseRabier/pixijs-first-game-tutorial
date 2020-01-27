@@ -14,16 +14,36 @@
 </style>
 
 
-# Introduction
+# Writing guidelines
 
-Exercices, what to say. more?
-
-# Meta
-
-Exercices should be on stuff that the student has seen before. It should be easy exercices.
-Exercice are here to make the student get into it, be part of it. It make them active learner.
-Exercices are a fun way to learn, to discover, and be creative, to have fun searching a solution by yourself.
+## Exercises
+Exercises should be on stuff that the student has seen before. It should be easy exercices.
+Exercise are here to make the student get into it, be part of it. It make them active learner.
+Exercises are a fun way to learn, to discover, and be creative, to have fun searching a solution by yourself.
 There is no need that the student find the solution at the end. It will be provided.
+
+
+# Presentation tips
+
+## Improvements
+
+Take notes on student questions and feedback.
+
+## Timing
+
+1h-1h30 estimated time. Each step should have a time estimation.
+
+## Introduction
+1. Say the subject of the course.
+2. Talk about yourself: This is highly inspired from the first week of course I had at ISART Digital. 
+I wanted to share and teach some key points of making a game. The point is giving you key points allowing you to make your own game.
+3. Give an teaser for curiosity: Show the resulting game that we gonna made. Make notice:
+    3.1 Can move the player.
+    3.2 Can avoid obstacle.
+    3.3 On obstacle hit restart.
+4. Verify that pre-requirement are met.
+
+@See https://teachingcommons.stanford.edu/resources/course-preparation-resources/course-preparation-handbook/preparing-first-class
 
 
 # Summary
@@ -199,7 +219,7 @@ const keyToSpeed: {[key: string]: Point} = {
     - 
 </div>
 
-This bellow could be a valid choice:
+This bellow could be a valid choice, but not my preference:
 
 src/obstacle.ts
 ```ts
@@ -286,3 +306,47 @@ When obstacle is leaving the map, and is not visible anymore to the player, dest
 ## NTH?
 
 We could make a GameObject class, and call update on every GameObject class. Independently from what it is used for.
+
+### this will not work, do you know why?
+index.ts
+```ts
+const obstacle = new Obstacle(player.position);
+
+obstacle.transform.position = new Point(app.renderer.width/2, 0);
+```
+
+obstacle.ts
+```ts
+import {Container, Point, Sprite} from 'pixi.js';
+import obstaclePng from './obstacle.png';
+
+function magnitudePoint(p: Point): number {
+  return Math.sqrt(p.x*p.x +  p.y*p.y);
+}
+
+export class Obstacle {
+  public readonly transform: Container = new Container();
+  private readonly sprite: Sprite;
+  private readonly direction: Point;
+
+  constructor(playerPos: PIXI.IPoint) {
+    this.sprite = Sprite.from(obstaclePng);
+    this.sprite.scale = new Point(0.3, 0.3);
+
+    const obstacleToPlayer: Point = new Point(
+        playerPos.x - this.transform.x,
+        playerPos.y - this.transform.y
+    );
+    const diffMagnitude = magnitudePoint(obstacleToPlayer);
+
+    // unit vector towards player
+    this.direction = new Point(
+        obstacleToPlayer.x / diffMagnitude,
+        obstacleToPlayer.y / diffMagnitude
+    );
+    this.transform.addChild(this.sprite);
+  }
+}
+```
+
+--> Because unit vector is done before obstacle get a position.

@@ -90,6 +90,9 @@ Each step is tagged, click on the title to get to the state of the code at start
 
 ## 0. Setup project
 
+You can skip the project setup if you cannot install nodeJS on you environment (like no admin right) by using https://www.pixiplayground.com/#/edit. However you will need to adapt the code yourself.
+
+
 <div class="explanation vocabulary" markdown>
 
 [Canvas HTML tag][0]: 
@@ -938,16 +941,125 @@ Note that there are more then one way to organize yourself.
 
 </div>
 
+<div class="exercice" markdown>
+If you like, you can refractor the player the same way. But it is ok to leave it as it is for now.
+</div>
+
 
 ## [9. Move obstacle towards player](https://github.com/ambroiseRabier/pixijs-first-game-tutorial/tree/9-move-obstacle-towards-player)
 
 <div class="exercice" markdown>
 
+Make the obstacle move toward the player when it spawn. Do not make the obstacle follow the player.
 
-<details  class="solution" mardown>
+
+<details class="tip" mardown>
+  <summary>Tip 1</summary>
+Use a unit vector to store the direction the rock should move to.
+You will need to use the gameloop to make the rock move continuously.
+
+</details>
+
+<details class="tip" mardown>
+  <summary>Tip 2</summary>
+A unit vector can be multipled by a speed to move the obstacle towards a direction.
+We first need to get the vector from the obstacle towards the player, then make it a unit vector.
+
+</details>
+
+<details class="tip" mardown>
+  <summary>Tip 3</summary>
+
+
+Bellow is how you get the unit vector towards the player. 
+
+index.ts
+```ts
+const obstacle = new Obstacle();
+
+obstacle.transform.position = new Point(app.renderer.width/2, 0);
+obstacle.init(player.position);
+```
+
+obstacle.ts
+```ts
+import {Container, Point, Sprite} from 'pixi.js';
+import obstaclePng from './obstacle.png';
+
+function magnitudePoint(p: Point): number {
+  return Math.sqrt(p.x*p.x +  p.y*p.y);
+}
+
+export class Obstacle {
+  public readonly transform: Container = new Container();
+  private readonly sprite: Sprite;
+  private direction: Point = new Point();
+
+  constructor() {
+    this.sprite = Sprite.from(obstaclePng);
+    this.sprite.scale = new Point(0.3, 0.3);
+  }
+
+  public init(playerPos: PIXI.IPoint) {
+    const obstacleToPlayer: Point = new Point(
+        playerPos.x - this.transform.x,
+        playerPos.y - this.transform.y
+    );
+    const diffMagnitude = magnitudePoint(obstacleToPlayer);
+
+    // unit vector towards player
+    this.direction = new Point(
+        obstacleToPlayer.x / diffMagnitude,
+        obstacleToPlayer.y / diffMagnitude
+    );
+    this.transform.addChild(this.sprite);
+  }
+}
+```
+
+The code above will only be made visible once you move the obstacle. You can now focus on the gameloop.
+
+</details>
+
+<details class="solution" mardown>
   <summary>Solution</summary>
 
+At the end of `app.ticker.add` callback, add:
 
+```ts
+obstacle.update();
+```
+
+Create an update method:
+```ts
+  public update(): void {
+    this.transform.position.x += this.direction.x;
+    this.transform.position.y += this.direction.y;
+  }
+```
+
+The obstacle should be moving towards the player, but...
+
+<div class="explanation">
+
+Have you noticed, how the top right of the obstacle, goes into the middle of our player. Isn't that misalignment strange?
+
+![misalignment of the obstacle](./tutorial/Capture.jpg)
+
+By default, the `anchor` of a sprite is top left. This explain why obstacle is slightly not aligned with the middle of the stage.
+You can fix that by doing:
+
+obstacle.ts
+```ts
+    this.sprite.anchor.x = 0.5;
+    this.sprite.anchor.y = 0.5;
+```
+
+Look back into the player code, he too has the `anchor` at `0.5`.
+
+You could also have left the `anchor` at `0`, and moved the `sprite` half his width and height to center it in the `transform`. On Unity, that is probably what you would have done.
+
+</div>
 
 </details>
 
@@ -981,6 +1093,7 @@ they should be destroyed when they are leaving the screen, not before they enter
 
 ## TEMP
 
+Add a link to finished game on the top. Teaser.
 
 ```ts
 type radian = number;
