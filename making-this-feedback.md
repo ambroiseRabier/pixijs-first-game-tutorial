@@ -33,3 +33,12 @@ I also made a hard copy of the latest state of my project into another folder an
 github, that would have been to slow to quickly compare both projects. Why is it useful? there are some change in configuration that I have done in 
 the middle of the project, but that should be there in the first step.
 
+
+## Feedback presentation 29 january 2020
+
+- Markdown pas évident à lire pr moi, préférer version compiler react markdown.
+- NodeJS avec IDE en local bien plus facile, on voit la console, pas de CORS sur image. Utiliser NVM pour installer nodeJS ss droit d'admin.
+- Github je peux pas clone de projet, proxy.
+- Voir mon second écran, en face de moi, plus facile.
+- Il y a de l'intérêt de plusieurs personnes.
+- Laisser des choix créatifs est bienvenue.

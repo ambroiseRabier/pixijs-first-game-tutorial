@@ -34,6 +34,12 @@ Take notes on student questions and feedback.
 1h-1h30 estimated time. Each step should have a time estimation.
 
 ## Introduction
+0. Préparer un lieu de de copy paste (slack idéal, sinon pastebin? framapad).
+0. Préparer exemple de projet fini.
+0. Prendre son chargeur.
+0. Take position where you have a good view on your second screen, and a view on your whole class. I guess best would be to have a second small screen being a copy of the large class screen.
+0. Prepare name list of participant (if you have the information).
+0. Tour de table: Prénom et pourquoi vous êtes là.
 1. Say the subject of the course.
 2. Talk about yourself: This is highly inspired from the first week of course I had at ISART Digital. 
 I wanted to share and teach some key points of making a game. The point is giving you key points allowing you to make your own game.
@@ -41,7 +47,10 @@ I wanted to share and teach some key points of making a game. The point is givin
     3.1 Can move the player.
     3.2 Can avoid obstacle.
     3.3 On obstacle hit restart.
-4. Verify that pre-requirement are met.
+4. Verify that pre-requirement are met. NodeJS and so
+5. Do the first step together, make sure everyone has his project working and updapting.
+6. Leave them the autonomy with exercice. (with written tutorial). (group by two why not)
+7. Do mob programming, to help the slowest peoples (if they want to). That will serve as correction. Correct anyway after a time (go around to see where people currently are).
 
 @See https://teachingcommons.stanford.edu/resources/course-preparation-resources/course-preparation-handbook/preparing-first-class
 

@@ -1197,7 +1197,7 @@ function getObstacleSpawnPoint(): Point {
 Note that your obstacle array length will keep growing as the obstacles are not removed. The game is gonna be very slow if we do not destroy them when they leave the screen. But this issue is an optimization issue, on a small game like this one, probably no user would ever notice. But with richer assets that use more memory space, this would quickly become an issue. We will address this issue later.
 
 
-## 11. Player collision
+## 11. Player death
 
 ## 12. Restart
 
