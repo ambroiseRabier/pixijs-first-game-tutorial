@@ -1,8 +1,8 @@
 import './index.html';
-import {Application, Sprite, Point} from 'pixi.js';
+import {Application, Sprite, Point, Circle, Graphics, Ticker} from 'pixi.js';
 import spaceshipPng from './spaceship.png';
-import obstaclePng from './obstacle.png';
 import {Obstacle} from './obstacle';
+import {circCirc} from './collisions';
 
 
 // The application will create a renderer using WebGL, if possible,
@@ -34,6 +34,16 @@ function createPlayer(): Sprite {
 
 const allObstacles: Obstacle[] = [];
 const player = createPlayer();
+// because the player hitbox will be addChilded to the sprite, so that it move along the player,
+// it also take the transformation applied on the player, scale and rotation.
+// that is why if we want to move the hitbox down on the player, it is the horizontal axis that we have to change.
+const playerHitbox = new Circle(-150, 0, 200);
+const playerHitboxGraph: Graphics = new Graphics();
+playerHitboxGraph.fill.color = 0xFF0000;
+playerHitboxGraph.fill.alpha = 0.5;
+playerHitboxGraph.fill.visible = true;
+playerHitboxGraph.drawShape(playerHitbox);
+player.addChild(playerHitboxGraph);
 
 app.stage.addChild(player);
 
@@ -47,6 +57,8 @@ const keysPressed: {[key: string]: number}  = {
   'ArrowRight': 0
 };
 
+// float === bad idea
+console.assert(player.scale.x == player.scale.y);
 
 // Listen for frame updates
 app.ticker.add(() => {
@@ -58,10 +70,23 @@ app.ticker.add(() => {
   player.position.x += playerSpeed.x * playerSpeedMultiplier;
   player.position.y += playerSpeed.y * playerSpeedMultiplier;
 
+  const globalPlayerHitboxPos = player.toGlobal(new Point(playerHitbox.x, playerHitbox.y));
+  // To make it correct, it should be an elipsis, this will work because scale.
+  // Rotation should ideally be taken in account too, making a collision system in account transform is not easy.
+  const globalPlayerHitbox = new Circle(globalPlayerHitboxPos.x, globalPlayerHitboxPos.y, playerHitbox.radius * player.scale.x);
   for (let obstacle of allObstacles) {
     obstacle.update();
+
+    const globalObstacleHitboxPos = obstacle.transform.toGlobal(new Point(obstacle.hitbox.x, obstacle.hitbox.y));
+    const globalObstacleHitbox = new Circle(globalObstacleHitboxPos.x, globalObstacleHitboxPos.y, obstacle.hitbox.radius);
+
+    if (circCirc(globalPlayerHitbox, globalObstacleHitbox)) {
+      console.log('player touched');
+      app.ticker.stop(); // note that this does not stop the Spawning of obstacles in setInterval callback bellow
+    }
   }
 });
+
 
 
 window.addEventListener('keydown', (event: KeyboardEvent) => {

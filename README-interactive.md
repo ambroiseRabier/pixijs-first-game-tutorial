@@ -50,6 +50,12 @@ This is a tutorial will guide you for making your first game with [pixijs](https
 
 Each step is tagged, click on the title to get to the state of the code at start of this step.
 
+# Pre-requisites
+
+NodeJS installed.
+Your preferred IDE installed, Webstorm or Visual Studio Code recommended.
+
+
 ## Choose your reading style
 
 <fieldset>
@@ -1194,10 +1200,83 @@ function getObstacleSpawnPoint(): Point {
 
 </div>
 
-Note that your obstacle array length will keep growing as the obstacles are not removed. The game is gonna be very slow if we do not destroy them when they leave the screen. But this issue is an optimization issue, on a small game like this one, probably no user would ever notice. But with richer assets that use more memory space, this would quickly become an issue. We will address this issue later.
+Note that your obstacle array length will keep growing as the obstacles are not removed. The game is gonna be very slow if we do not destroy them when they leave the screen. But this issue is an optimization issue, on a small game like this one, probably no user would ever notice. We will address this issue later.
 
 
 ## 11. Player death
+
+<div class="explanation" markdown>
+Let's talk about collisions. In a game engine like Unity, collisions are handled by the engine, in pixiJS you have to code it yourself.  
+
+Hitboxes are the part of an entity of your game that can register collisions. Usually, hitboxes are smaller then the visual part of the entity.  
+Hitboxes can be very small, like in a bullet hell shoot them up on the player. Or big like for a collectible, or enemy hitbox.  
+A same entity, can have multiple hitboxes, made of many primitives.  
+
+Here is some type of hitboxes (in 2d):
+- Circle
+- Rectangle
+- Point
+- Pixel perfect
+- Line
+
+Circle, rectangle and point are the most used. Pixel perfect is expensive for the CPU, and usually not required. A line can be useful for high speed projectiles.
+
+As about when collisions should be calculated, in Unity, it is calculated before the gameplay custom code, but before rendering. However feel free to calculate at another step. But you should not mix moving entities and calculating collisions. (don't worry, we are gonna stay very simple here).
+
+Hitboxes are usually set arbitrary according to the visual. In an editor. We are going to correct the hitbox size in-game here.
+
+</div>
+
+<div class="exercice">
+
+Here is two collision methods:
+
+collisions.ts
+```ts
+import {Circle, Point} from 'pixi.js';
+
+export function rectRect(r1: PIXI.Rectangle, r2: PIXI.Rectangle): boolean {
+  return !(r1.top > r2.bottom
+      || r1.bottom < r2.top
+      || r1.left > r2.right
+      || r1.right < r2.left);
+}
+
+export function circCirc(r1: PIXI.Circle, r2: PIXI.Circle): boolean {
+  const bothRadius = r1.radius + r2.radius;
+  const diff = new Point(
+      r1.x - r2.x,
+      r1.y - r2.y,
+  );
+  const distance = Math.sqrt(diff.x*diff.x + diff.y*diff.y);
+
+  return distance <= bothRadius;
+}
+```
+
+Chose between circle or rectangle for your hitboxes and using the gameloop.
+When the player hit an obstacle you can add a `console.log` or call `app.ticker.stop()`.
+
+You can help yourselves by displaying the hitboxes:
+
+obstacle.ts
+```ts
+public readonly hitbox: Circle | Rectangle;
+private hitboxGraph = new Graphics();
+constructor() {
+  // ...
+  this.hitbox = ...
+  this.hitboxGraph.fill.alpha = 0.5;
+  this.hitboxGraph.fill.color = 0xFF0000;
+  this.hitboxGraph.fill.visible = true;
+  this.hitboxGraph.drawShape(this.hitbox);
+  this.transform.addChild(this.hitboxGraph);
+} 
+```
+
+
+</div>
+
 
 ## 12. Restart
 
@@ -1237,4 +1316,65 @@ function makeRock(position: Point, direction: radian): Sprite {
 
 const newRock = makeRock(new Point(app.renderer.width/2, app.renderer.height/2), 0);
 app.stage.addChild(newRock);
+```
+
+## SetInterval fix
+## Speed deltaTim fix
+
+## trop complexe
+
+```ts
+const allObstacles: Obstacle[] = [];
+const player = createPlayer();
+// because the player hitbox will be addChilded to the sprite, so that it move along the player,
+// it also take the transformation applied on the player, scale and rotation.
+// that is why if we want to move the hitbox down on the player, it is the horizontal axis that we have to change.
+const playerHitbox = new Circle(-150, 0, 200);
+const playerHitboxGraph: Graphics = new Graphics();
+playerHitboxGraph.fill.color = 0xFF0000;
+playerHitboxGraph.fill.alpha = 0.5;
+playerHitboxGraph.fill.visible = true;
+playerHitboxGraph.drawShape(playerHitbox);
+player.addChild(playerHitboxGraph);
+
+app.stage.addChild(player);
+
+let playerSpeed = new Point();
+const playerSpeedMultiplier = 5;
+
+const keysPressed: {[key: string]: number}  = {
+  'ArrowUp': 0,
+  'ArrowDown': 0,
+  'ArrowLeft': 0,
+  'ArrowRight': 0
+};
+
+// float === bad idea
+console.assert(player.scale.x == player.scale.y);
+
+// Listen for frame updates
+app.ticker.add(() => {
+  playerSpeed = new Point(
+      keysPressed['ArrowRight'] - keysPressed['ArrowLeft'],
+      keysPressed['ArrowDown'] - keysPressed['ArrowUp']
+  );
+  // each frame we spin the bunny around a bit
+  player.position.x += playerSpeed.x * playerSpeedMultiplier;
+  player.position.y += playerSpeed.y * playerSpeedMultiplier;
+
+  const globalPlayerHitboxPos = player.toGlobal(new Point(playerHitbox.x, playerHitbox.y));
+  // To make it correct, it should be an elipsis, this will work because scale.
+  const globalPlayerHitbox = new Circle(globalPlayerHitboxPos.x, globalPlayerHitboxPos.y, playerHitbox.radius / player.scale.x);
+  for (let obstacle of allObstacles) {
+    obstacle.update();
+
+    const globalObstacleHitboxPos = obstacle.transform.toGlobal(new Point(obstacle.hitbox.x, obstacle.hitbox.y));
+    const globalObstacleHitbox = new Circle(globalObstacleHitboxPos.x, globalObstacleHitboxPos.y, obstacle.hitbox.radius);
+
+    if (circCirc(globalPlayerHitbox, globalObstacleHitbox)) {
+      console.log('player touched');
+      app.ticker.stop()
+    }
+  }
+});
 ```
