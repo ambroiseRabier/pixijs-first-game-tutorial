@@ -36,4 +36,8 @@ export class Obstacle {
     this.transform.position.x += this.direction.x;
     this.transform.position.y += this.direction.y;
   }
+
+  destroy() {
+
+  }
 }

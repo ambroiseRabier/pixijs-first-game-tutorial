@@ -15,12 +15,16 @@ const app = new Application();
 // can then insert into the DOM
 document.body.appendChild(app.view);
 
+const playerStartPos: Point = new Point(
+    app.renderer.width / 2,
+    app.renderer.height / 2,
+);
+
 function createPlayer(): Sprite {
   let _player = Sprite.from(spaceshipPng);
 
-  // Setup the position of the sprite
-  _player.x = app.renderer.width / 2;
-  _player.y = app.renderer.height / 2;
+  // Setup the position of the sprite, we use copyFrom to make a deep copy and not share the reference
+  _player.position.copyFrom(playerStartPos);
 
   // Rotate around the center
   _player.anchor.x = 0.5;
@@ -71,8 +75,13 @@ app.ticker.add(() => {
     visualizer.displayOnce(obstacleHitbox(obstacle));
 
     if (circCirc(playerHitbox(), obstacleHitbox(obstacle))) {
-      console.log('hit !');
       app.ticker.stop();
+      // ideally clearInterval(obstacleSpawnInterval) should be called here, some kind, in
+      // some kind of onPlayerDeath callback, as it will still will be called when app.ticker is stopped.
+      setTimeout(() => {
+        restart();
+        app.ticker.start();
+      }, 1000);
     }
   }
 });
@@ -85,6 +94,24 @@ window.addEventListener('keydown', (event: KeyboardEvent) => {
 window.addEventListener('keyup', (event: KeyboardEvent) => {
   keysPressed[event.key] = 0;
 });
+
+function restart() {
+  for (const obs of allObstacles) {
+    // let obstacle know it is removed
+    obs.destroy();
+
+    // remove from the stage
+    app.stage.removeChild(obs.transform);
+  }
+
+  // clear the array
+  allObstacles.splice(0, allObstacles.length);
+  player.position = playerStartPos;
+
+  // stop then restart the interval
+  clearInterval(obstacleSpawnInterval);
+  obstacleSpawnInterval = startObstacleSpawn();
+}
 
 function getObstacleSpawnPoint(): Point {
   // spawn the obstacle outside of camera (stage == camera because we haven't moved it)
@@ -110,12 +137,30 @@ function getObstacleSpawnPoint(): Point {
   return spawnPoint;
 }
 
-setInterval(() => {
-  const obstacle = new Obstacle();
-  const randomPos = getObstacleSpawnPoint();
+let obstacleSpawnInterval = startObstacleSpawn();
 
-  obstacle.transform.position = randomPos;
-  obstacle.init(player.position);
-  app.stage.addChild(obstacle.transform);
-  allObstacles.push(obstacle);
-}, 1000);
+function startObstacleSpawn(): number {
+  // setInterval return a number, but somehow, our IDE think it is NodeJS environment and not Browser env.
+  // So we workaround the type system by casting to any.
+  return setInterval(() => {
+    const obstacle = new Obstacle();
+    const randomPos = getObstacleSpawnPoint();
+
+    obstacle.transform.position = randomPos;
+    obstacle.init(player.position);
+    app.stage.addChild(obstacle.transform);
+    allObstacles.push(obstacle);
+  }, 1000) as any;
+}
+
+
+
+
+
+
+
+
+
+
+
+

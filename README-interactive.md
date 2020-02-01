@@ -1265,7 +1265,6 @@ import {Application, Circle, Rectangle, Graphics} from 'pixi.js';
 
 export class HitboxVisualizer {
   private readonly container: Graphics;
-  private used: number = 0;
 
   constructor(app: Application) {
     this.container = new Graphics();
@@ -1350,6 +1349,10 @@ Making all hitboxes global from start, make it way easier to understand for this
 
 ## 12. Restart
 
+<div class="explanation" markdown>
+garbage collector, remove all reference of an object to make it elligible for garbage collector.
+</div>
+
 <div class="exercice" markdown>
 
 When the player is hit by an obstacle, move the player back to initial position, remove all obstacle from the map. Reset the setInterval (initial obstacle appearence delay should stay the same).
@@ -1360,8 +1363,89 @@ When the player is hit by an obstacle, move the player back to initial position,
 
 
 </details>
+<details class="soution" mardown>
+  <summary>Solution</summary>
+
+Refractor to:
+```ts
+const playerStartPos: Point = new Point(
+    app.renderer.width / 2,
+    app.renderer.height / 2,
+);
+
+function createPlayer(): Sprite {
+  let _player = Sprite.from(spaceshipPng);
+
+  // Setup the position of the sprite, we use copyFrom to make a deep copy and not share the reference
+  _player.position.copyFrom(playerStartPos);
+
+  // ...
+}
+```
+and
+```ts
+let obstacleSpawnInterval = startObstacleSpawn();
+
+function startObstacleSpawn(): number {
+  // setInterval return a number, but somehow, our IDE think it is NodeJS environment and not Browser env.
+  // So we workaround the type system by casting to any.
+  return setInterval(() => {
+    const obstacle = new Obstacle();
+    const randomPos = getObstacleSpawnPoint();
+
+    obstacle.transform.position = randomPos;
+    obstacle.init(player.position);
+    app.stage.addChild(obstacle.transform);
+    allObstacles.push(obstacle);
+  }, 1000) as any;
+}
+```
+
+
+Add:
+```ts
+function restart() {
+  for (const obs of allObstacles) {
+    // let obstacle know it is removed
+    obs.destroy();
+
+    // remove from the stage
+    app.stage.removeChild(obs.transform);
+  }
+  
+  // clear the array
+  allObstacles.splice(0, allObstacles.length);
+  player.position = playerStartPos;
+  
+  // stop then restart the interval
+  clearInterval(obstacleSpawnInterval);
+  obstacleSpawnInterval = startObstacleSpawn()
+}
+```
+
+Call restart on collision:
+```ts
+    if (circCirc(playerHitbox(), obstacleHitbox(obstacle))) {
+      restart();
+    }
+```
+
+Now, calling `startObstacleSpawn` on the global scope feel strange. Ideally, we should have a start method instead of writing everything on the global scope. But we might refractor that later.
+Let's make it better for the player, it is good to let him know how he died, we are gonna stop the game, and leave a short time for the player to understand what happened before restarting.
+
+```ts
+      // ideally clearInterval(obstacleSpawnInterval) should be called here, some kind, in
+      // some kind of onPlayerDeath callback, as it will still will be called when app.ticker is stopped.
+      setTimeout(() => {
+        restart();
+      }, 1000);
+```
+
+
+</details>
 
 </div>
+
 
 ## 13. Score
 
@@ -1402,7 +1486,11 @@ app.stage.addChild(newRock);
 ```
 
 ## SetInterval fix
-## Speed deltaTim fix
+## Speed deltaTime fix
+Game run differently if you move, a bit slower. Run differently from pc to another pc. Many old games doesn't have that correction. I have played a pacman that run ten to hundred time faster, you are dead before pressing a key. I also played a more recent 3d racing game, that was hard, if not impossible to win on a low end PC, but on a sufficient performant PC, my car was way faster, and it felt like playing from hard to easy/medium difficulty.
+
+
+`setInterval` however, would be troublesome if you had a `pause` feature, you should rely on something else taking in acount game time.
 
 ## trop complexe
 

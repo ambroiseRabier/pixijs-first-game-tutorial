@@ -2,7 +2,6 @@ import {Application, Circle, Rectangle, Graphics} from 'pixi.js';
 
 export class HitboxVisualizer {
   private readonly container: Graphics;
-  private used: number = 0;
 
   constructor(app: Application) {
     this.container = new Graphics();
