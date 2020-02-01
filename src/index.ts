@@ -1,8 +1,9 @@
 import './index.html';
-import {Application, Sprite, Point} from 'pixi.js';
+import {Application, Point, Sprite, Circle} from 'pixi.js';
 import spaceshipPng from './spaceship.png';
-import obstaclePng from './obstacle.png';
 import {Obstacle} from './obstacle';
+import {HitboxVisualizer} from './simple-global-hitbox-visualizer';
+import {circCirc} from './collision';
 
 
 // The application will create a renderer using WebGL, if possible,
@@ -34,6 +35,10 @@ function createPlayer(): Sprite {
 
 const allObstacles: Obstacle[] = [];
 const player = createPlayer();
+const visualizer = new HitboxVisualizer(app);
+const playerHitbox = () => new Circle(player.x, player.y - 5, 15);
+const obstacleHitbox = (obstacle: Obstacle) => new Circle(obstacle.transform.x, obstacle.transform.y, 18);
+
 
 app.stage.addChild(player);
 
@@ -58,8 +63,17 @@ app.ticker.add(() => {
   player.position.x += playerSpeed.x * playerSpeedMultiplier;
   player.position.y += playerSpeed.y * playerSpeedMultiplier;
 
+  visualizer.displayOnce(playerHitbox());
+
   for (let obstacle of allObstacles) {
     obstacle.update();
+
+    visualizer.displayOnce(obstacleHitbox(obstacle));
+
+    if (circCirc(playerHitbox(), obstacleHitbox(obstacle))) {
+      console.log('hit !');
+      app.ticker.stop();
+    }
   }
 });
 

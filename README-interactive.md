@@ -50,6 +50,12 @@ This is a tutorial will guide you for making your first game with [pixijs](https
 
 Each step is tagged, click on the title to get to the state of the code at start of this step.
 
+# Pre-requisites
+
+NodeJS installed.
+Your preferred IDE installed, Webstorm or Visual Studio Code recommended.
+
+
 ## Choose your reading style
 
 <fieldset>
@@ -1194,12 +1200,168 @@ function getObstacleSpawnPoint(): Point {
 
 </div>
 
-Note that your obstacle array length will keep growing as the obstacles are not removed. The game is gonna be very slow if we do not destroy them when they leave the screen. But this issue is an optimization issue, on a small game like this one, probably no user would ever notice. But with richer assets that use more memory space, this would quickly become an issue. We will address this issue later.
+Note that your obstacle array length will keep growing as the obstacles are not removed. The game is gonna be very slow if we do not destroy them when they leave the screen. But this issue is an optimization issue, on a small game like this one, probably no user would ever notice. We will address this issue later.
 
 
 ## 11. Player death
 
+<div class="explanation" markdown>
+Let's talk about collisions. In a game engine like Unity, collisions are handled by the engine, in pixiJS you have to code it yourself.  
+
+Hitboxes are the part of an entity of your game that can register collisions. Usually, hitboxes are smaller then the visual part of the entity.  
+Hitboxes can be very small, like in a bullet hell shoot them up on the player. Or big like for a collectible, or enemy hitbox.  
+A same entity, can have multiple hitboxes, made of many primitives.  
+
+Here is some type of hitboxes (in 2d):
+- Circle
+- Rectangle
+- Point
+- Pixel perfect
+- Line
+
+Circle, rectangle and point are the most used. Pixel perfect is expensive for the CPU, and usually not required. A line can be useful for high speed projectiles.
+
+As about when collisions should be calculated, in Unity, it is calculated before the gameplay custom code, but before rendering. However feel free to calculate at another step. But you should not mix moving entities and calculating collisions. (don't worry, we are gonna stay very simple here).
+
+Hitboxes are usually set arbitrary according to the visual. In an editor. We are going to correct the hitbox size in-game here.
+
+</div>
+
+<div class="exercice" markdown>
+
+Here is two collision methods:
+
+collisions.ts
+```ts
+import {Circle, Point} from 'pixi.js';
+
+export function rectRect(r1: PIXI.Rectangle, r2: PIXI.Rectangle): boolean {
+  return !(r1.top > r2.bottom
+      || r1.bottom < r2.top
+      || r1.left > r2.right
+      || r1.right < r2.left);
+}
+
+export function circCirc(r1: PIXI.Circle, r2: PIXI.Circle): boolean {
+  const bothRadius = r1.radius + r2.radius;
+  const diff = new Point(
+      r1.x - r2.x,
+      r1.y - r2.y,
+  );
+  const distance = Math.sqrt(diff.x*diff.x + diff.y*diff.y);
+
+  return distance <= bothRadius;
+}
+```
+
+Chose between circle or rectangle for your hitboxes and using the gameloop.
+When the player hit an obstacle you can add a `console.log` or call `app.ticker.stop()`.
+
+Here is a little script to help you displaying the hitboxes:
+
+simple-global-hitbox-visualizer.ts
+```ts
+import {Application, Circle, Rectangle, Graphics} from 'pixi.js';
+
+export class HitboxVisualizer {
+  private readonly container: Graphics;
+  private used: number = 0;
+
+  constructor(app: Application) {
+    this.container = new Graphics();
+    app.stage.addChild(this.container);
+    app.ticker.add(() => {
+      app.stage.addChild(this.container); // make sure it always is at front
+      this.container.clear();
+    }, undefined, 1); // run before main loop
+  }
+
+  displayOnce(hitbox: Circle | Rectangle) {
+    this.container.fill.alpha = 0.5;
+    this.container.fill.color = 0xFF0000;
+    this.container.fill.visible = true;
+    this.container.drawShape(hitbox);
+  }
+}
+```
+
+Usage:
+```ts
+const visualizer = new HitboxVisualizer(app);
+
+// ...
+
+app.ticker.add(() => {
+  // ...
+
+  visualizer.displayOnce(new Circle(app.renderer.width / 2, app.renderer.height / 2, 50));
+});
+```
+
+<details class="tip" mardown>
+  <summary>Tip 1</summary>
+
+Use a function that will return a Circle or Rectangle with up to date coordinates.
+```ts
+const playerHitbox = () => new Circle(player.x, player.y - 5, 15);
+```
+
+</details>
+
+<details class="solution" mardown>
+  <summary>Solution</summary>
+
+
+index.ts
+```ts
+const visualizer = new HitboxVisualizer(app);
+const playerHitbox = () => new Circle(player.x, player.y - 5, 15);
+const obstacleHitbox = (obstacle: Obstacle) => new Circle(obstacle.transform.x, obstacle.transform.y, 18);
+
+// Listen for frame updates
+app.ticker.add(() => {
+  // ...
+
+  visualizer.displayOnce(playerHitbox());
+
+  for (let obstacle of allObstacles) {
+    obstacle.update();
+
+    visualizer.displayOnce(obstacleHitbox(obstacle));
+
+    if (circCirc(playerHitbox(), obstacleHitbox(obstacle))) {
+      console.log('hit !');
+      app.ticker.stop();
+    }
+  }
+});
+```
+
+You might have noticed that when the game stop and you check the collisions, the two red circle goes into each other sometimes. This is normal, this is what we have coded.
+This is important to know that ultra fast projectiles might bypass another hitbox, for example.
+
+Story time: the first version of the solution was way more complex, you can check it out here `git checkout hitboxes-are-complex`.
+Making all hitboxes global from start, make it way easier to understand for this tutorial. It this branch I put hitboxes inside `obstacle.transform` and `player` (player is a sprite). When you do this, you first need to move both hitboxes on the same origin, usually the most upwards one, the stage. There is a handy method called `toGlobal` on both `obstacle.transform` and `player` for that. But it only work for `Point`, rotation and scale of intermediate container has to be taken in account by your code. A game engine like Unity has support for this kind of thing in their collision system, of course.
+
+</details>
+
+</div>
+
+
 ## 12. Restart
+
+<div class="exercice" markdown>
+
+When the player is hit by an obstacle, move the player back to initial position, remove all obstacle from the map. Reset the setInterval (initial obstacle appearence delay should stay the same).
+
+<details class="tip" mardown>
+  <summary>Tip 1</summary>
+
+
+
+</details>
+
+</div>
 
 ## 13. Score
 
@@ -1238,3 +1400,10 @@ function makeRock(position: Point, direction: radian): Sprite {
 const newRock = makeRock(new Point(app.renderer.width/2, app.renderer.height/2), 0);
 app.stage.addChild(newRock);
 ```
+
+## SetInterval fix
+## Speed deltaTim fix
+
+## trop complexe
+
+@See `git checkout hitboxes-are-complex`
