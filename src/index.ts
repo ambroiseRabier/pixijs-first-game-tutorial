@@ -1,9 +1,9 @@
 import './index.html';
-import {Application, Point, Sprite, Circle, Text, TextStyle} from 'pixi.js';
+import {Application, Point, Sprite, Circle, Text, TextStyle, Rectangle} from 'pixi.js';
 import spaceshipPng from './spaceship.png';
 import {Obstacle} from './obstacle';
 import {HitboxVisualizer} from './simple-global-hitbox-visualizer';
-import {circCirc} from './collision';
+import {circCirc, rectRect} from './collision';
 
 
 // The application will create a renderer using WebGL, if possible,
@@ -37,6 +37,7 @@ function createPlayer(): Sprite {
   return _player;
 }
 
+const stageRect = new Rectangle(0,0, app.renderer.width, app.renderer.height);
 const allObstacles: Obstacle[] = [];
 const player = createPlayer();
 const visualizer = new HitboxVisualizer(app);
@@ -77,9 +78,10 @@ app.ticker.add(() => {
 
   visualizer.displayOnce(playerHitbox());
 
-  for (let obstacle of allObstacles) {
-    obstacle.update();
+  for (let index in allObstacles) {
+    const obstacle = allObstacles[index];
 
+    obstacle.update();
     visualizer.displayOnce(obstacleHitbox(obstacle));
 
     if (circCirc(playerHitbox(), obstacleHitbox(obstacle))) {
@@ -90,6 +92,21 @@ app.ticker.add(() => {
         restart();
         app.ticker.start();
       }, 1000);
+    }
+
+    // getBounds() is expensive and should be cached, but getBounds can return a wrong value first
+    // time it is used probably for a sprite loading reason, so we are gonna skip this time.
+    const insideScreen = rectRect(obstacle.spriteBounds, stageRect);
+    const firstTimeEnteringScreen = insideScreen && !obstacle.enteredScreenOnce;
+    const firstTimeLeavingScreen = !insideScreen && obstacle.enteredScreenOnce;
+
+    if (firstTimeEnteringScreen) {
+      obstacle.enteredScreenOnce = true;
+    } else if (firstTimeLeavingScreen) {
+      // surprisingly, index is a string
+      allObstacles.splice(index as any as number, 1);
+      app.stage.removeChild(obstacle.transform);
+      obstacle.destroy();
     }
   }
 });

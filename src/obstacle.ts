@@ -1,4 +1,4 @@
-import {Container, Point, Sprite} from 'pixi.js';
+import {Container, Point, Sprite, Rectangle} from 'pixi.js';
 import obstaclePng from './obstacle.png';
 
 function magnitudePoint(p: Point): number {
@@ -9,6 +9,10 @@ export class Obstacle {
   public readonly transform: Container = new Container();
   private readonly sprite: Sprite;
   private direction: Point = new Point();
+  public enteredScreenOnce: boolean = false;
+  public get spriteBounds() {
+    return this.sprite.getBounds();
+  }
 
   constructor() {
     this.sprite = Sprite.from(obstaclePng);

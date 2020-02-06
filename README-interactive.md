@@ -1471,19 +1471,50 @@ And that in restart function:
   scoreText.text = '0';
 ```
 
-## 14. Destroy obstacles
+## 14. Obstacle optimization
 
 Garbage collector. remove from scene, and kill any reference.
 
-Collision
+
+index.ts
 ```ts
-function rectRect(r1: PIXI.Rectangle, r2: PIXI.Rectangle): boolean {
-  return !(r1.top > r2.bottom
-      || r1.bottom < r2.top
-      || r1.left > r2.right
-      || r1.right < r2.left);
+const stageRect = new Rectangle(0,0, app.renderer.width, app.renderer.height);
+
+// ...
+
+app.ticker.add(() => {
+  // ...
+
+  for (let index in allObstacles) {
+    const obstacle = allObstacles[index]; 
+    // ...
+
+    // getBounds() is expensive and should be cached, but getBounds can return a wrong value first
+    // time it is used probably for a sprite loading reason, so we are gonna skip this time.
+    const insideScreen = rectRect(obstacle.spriteBounds, stageRect);
+    const firstTimeEnteringScreen = insideScreen && !obstacle.enteredScreenOnce;
+    const firstTimeLeavingScreen = !insideScreen && obstacle.enteredScreenOnce;
+
+    if (firstTimeEnteringScreen) {
+      obstacle.enteredScreenOnce = true;
+    } else if (firstTimeLeavingScreen) {
+      // surprisingly, index is a string
+      allObstacles.splice(index as any as number, 1);
+      app.stage.removeChild(obstacle.transform);
+      obstacle.destroy();
+    }
+  }
+});
+
+```
+
+obstacle.ts
+```ts
+public get spriteBounds() {
+  return this.sprite.getBounds();
 }
 ```
+
 this version is better then `&&` version, because it does not try every statement.
 
 Nothing displaying ? of course, you have to make sure they can spawn and enter screen.
