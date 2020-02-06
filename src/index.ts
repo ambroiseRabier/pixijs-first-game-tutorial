@@ -1,5 +1,5 @@
 import './index.html';
-import {Application, Point, Sprite, Circle} from 'pixi.js';
+import {Application, Point, Sprite, Circle, Text, TextStyle} from 'pixi.js';
 import spaceshipPng from './spaceship.png';
 import {Obstacle} from './obstacle';
 import {HitboxVisualizer} from './simple-global-hitbox-visualizer';
@@ -43,8 +43,16 @@ const visualizer = new HitboxVisualizer(app);
 const playerHitbox = () => new Circle(player.x, player.y - 5, 15);
 const obstacleHitbox = (obstacle: Obstacle) => new Circle(obstacle.transform.x, obstacle.transform.y, 18);
 
-
 app.stage.addChild(player);
+
+
+const scoreText: Text = new Text('0', new TextStyle({fill: 0xFFFFFF, fontSize: 38}));
+scoreText.position.x = playerStartPos.x;
+scoreText.position.y = 30;
+scoreText.anchor = new Point(0.5, 0.5);
+
+app.stage.addChild(scoreText);
+
 
 let playerSpeed = new Point();
 const playerSpeedMultiplier = 5;
@@ -111,6 +119,9 @@ function restart() {
   // stop then restart the interval
   clearInterval(obstacleSpawnInterval);
   obstacleSpawnInterval = startObstacleSpawn();
+
+  // reset score
+  scoreText.text = '0';
 }
 
 function getObstacleSpawnPoint(): Point {
@@ -150,6 +161,7 @@ function startObstacleSpawn(): number {
     obstacle.init(player.position);
     app.stage.addChild(obstacle.transform);
     allObstacles.push(obstacle);
+    scoreText.text = (parseInt(scoreText.text) + 1) + '';
   }, 1000) as any;
 }
 

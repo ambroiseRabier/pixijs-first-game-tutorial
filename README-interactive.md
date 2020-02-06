@@ -1449,6 +1449,28 @@ Let's make it better for the player, it is good to let him know how he died, we 
 
 ## 13. Score
 
+To make our game more interesting, we are gonna add scoring to it. And that will also show you how to add text.
+
+```ts
+const scoreText: Text = new Text('0', new TextStyle({fill: 0xFFFFFF, fontSize: 38}));
+scoreText.position.x = playerStartPos.x;
+scoreText.position.y = 30;
+scoreText.anchor = new Point(0.5, 0.5);
+
+app.stage.addChild(scoreText);
+```
+
+Add this in obstacle setInterval:
+```ts
+    scoreText.text = (parseInt(scoreText.text) + 1) + ''; 
+```
+
+And that in restart function:
+```ts
+  // reset score
+  scoreText.text = '0';
+```
+
 ## 14. Destroy obstacles
 
 Garbage collector. remove from scene, and kill any reference.
@@ -1467,9 +1489,38 @@ this version is better then `&&` version, because it does not try every statemen
 Nothing displaying ? of course, you have to make sure they can spawn and enter screen.
 they should be destroyed when they are leaving the screen, not before they entered. I chose to use a flag bool to track when they entered at least once the screen.
 
+## 15. Varying framerate fix
+
+<div class="explanation" markdown>
+deltatime, setInterval bad.
+
+Game run differently if you move, a bit slower. Run differently from pc to another pc. Many old games doesn't have that correction. I have played a pacman that run ten to hundred time faster, you are dead before pressing a key. I also played a more recent 3d racing game, that was hard, if not impossible to win on a low end PC, but on a sufficient performant PC, my car was way faster, and it felt like playing from hard to easy/medium difficulty.
+
+
+`setInterval` however, would be troublesome if you had a `pause` feature, you should rely on something else taking in acount game time.
+
+</div>
+
+
+## 16. Add a special feature
+
+Lastly, I encourage you, if you haven't yet, to add a feature of your own creativity to your game. Creativity often come faster when you have constraints, the game in itself you have build is a constraint, your new feature should goes well along what you have already build. And it should not be too complex.
+
+<details>
+  <summary>I recommended at least thinking about it few minutes (even if you see yourselves as creative !).</summary>
+  - Make the player able to shoot, when the shot hit a obstacle, it is destroyed. Tip: a shot is similar to the obstacle, it just spawn around the player and move straight into a direction, it best use a Point collision box.
+    - If you have done the above, you can make the obstacle split in two like in Asteroid game.
+  - Make a power-up that the player can pick up to gain score.
+  - Make the obstacle move faster or spawn faster with time, to increase the difficulty over time.
+  - Making another type of obstacle, with different size or behavior.
+  - Make the restart only when player press space. Add a text saying it.
+</details>
+
+
 ## TEMP
 
 Add a link to finished game on the top. Teaser.
+Add a encouragment to adapt the game to your style, value, small thing more, different sprite...
 
 ```ts
 type radian = number;
@@ -1484,13 +1535,6 @@ function makeRock(position: Point, direction: radian): Sprite {
 const newRock = makeRock(new Point(app.renderer.width/2, app.renderer.height/2), 0);
 app.stage.addChild(newRock);
 ```
-
-## SetInterval fix
-## Speed deltaTime fix
-Game run differently if you move, a bit slower. Run differently from pc to another pc. Many old games doesn't have that correction. I have played a pacman that run ten to hundred time faster, you are dead before pressing a key. I also played a more recent 3d racing game, that was hard, if not impossible to win on a low end PC, but on a sufficient performant PC, my car was way faster, and it felt like playing from hard to easy/medium difficulty.
-
-
-`setInterval` however, would be troublesome if you had a `pause` feature, you should rely on something else taking in acount game time.
 
 ## trop complexe
 
