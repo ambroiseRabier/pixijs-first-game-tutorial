@@ -1515,12 +1515,11 @@ public get spriteBounds() {
 }
 ```
 
-this version is better then `&&` version, because it does not try every statement.
 
 Nothing displaying ? of course, you have to make sure they can spawn and enter screen.
 they should be destroyed when they are leaving the screen, not before they entered. I chose to use a flag bool to track when they entered at least once the screen.
 
-## 15. Varying framerate fix
+## 15. Varying game speed fix
 
 <div class="explanation" markdown>
 deltatime, setInterval bad.
@@ -1531,6 +1530,184 @@ Game run differently if you move, a bit slower. Run differently from pc to anoth
 `setInterval` however, would be troublesome if you had a `pause` feature, you should rely on something else taking in acount game time.
 
 </div>
+
+index.ts
+```ts
+  obstacle.update(app.ticker.deltaTime);
+
+  player.position.x += playerSpeed.x * playerSpeedMultiplier * app.ticker.deltaTime;
+  player.position.y += playerSpeed.y * playerSpeedMultiplier * app.ticker.deltaTime;
+```
+
+obstacle.ts
+```ts
+  public update(deltaTime: number): void {
+    this.transform.position.x += this.direction.x * deltaTime;
+    this.transform.position.y += this.direction.y * deltaTime;
+  }
+```
+
+Feel free to correct the speed of player and obstacles. Also, you can remove the red circles indicating the hitboxes when you make other test your game.
+
+---
+
+We need to correct the setInterval, so that it does not run when the tab is not focused. As requestAnimationFrame used by pixi Timer pause when 
+the tab is not focused too. Note that, setInterval cannot run more then once per second on an unfocused tab.
+To see what bug you have, you can go onto another tab, wait 10seconds, then come back, you should see plenty of rocks spawning at once (actually, they spawned
+long ago, but they start moving all together when you come back to the tab, also note that even when leaving the game for a while, you are not killed.
+
+@See https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
+
+### Some theory stuff you migh wanna skip
+
+---
+
+If you want your timer to still work the same when tab is not focused, you can play an empty sound, or use webworker.
+
+SetTimeout can only be called no more then once per second if not focused tab, on chrome at least.
+
+https://stackoverflow.com/questions/6032429/chrome-timeouts-interval-suspended-in-background-tabs
+
+---
+
+```
+
+WaitForSeconds will be accurate to within:
+
+your system clock's error margin*,
+
+plus up to the duration of about^ one frame,
+
+but possibly with consideration for floating point accuracy*^ if your timer is really long.
+
+```
+
+ 
+
+@Src https://forum.unity.com/threads/is-yield-return-new-waitforseconds-accurate.509007/
+
+ 
+
+ 
+
+ 
+
+```
+
+The granularity of WaitForSeconds in limited by the framerate, as they're checked once per frame loop. If you require very precise timing then you're stuck depending on FixedUpdate in some way. But if you're running into very low FPS you might want to fix that first.
+
+```
+
+ 
+
+```
+
+Real-time means that even if the FPS spikes (up or down) there is no change to the "timer" if your game runs slow or fast, 3 real-time seconds is 3 real-time seconds. Real-time IS FPS independent. However, WaitForSeconds() is dependent on Time.scale, right? So it is not real-time.
+
+ 
+
+For example, we use Time.scale to pause our game, or change the speed (fast forward or slow motion). However, we don't use WaitForSeconds() anywhere in our GUI or else pausing the game would also pause the GUI (same thing for deltaTime/fixedDeltaTime respectively).
+
+```
+
+ 
+
+```
+
+The way co-routines (and WaitForSecond) work, they are checked once per frame, which means that the max resolution (or rather, precision) you can get is the time it takes (on average) for one frame to render. Let's make an example:
+
+ 
+
+ 
+
+You call WaitForSecond(1), and each one of your frames take 300ms to render (this is very slow, but easy to illustrate my point with), this is what will happen:
+
+ 
+
+Frame N+1 renders, the WaitForSecond timer is now at 300ms.
+
+Frame N+2 renders, the WaitForSecond timer is now at 600ms.
+
+Frame N+3 renders, the WaitForSecond timer is now at 900ms.
+
+Frame N+4 renders, the WaitForSecond timer is now at 1200ms and is now activated, this is 200ms to late, but there is nothing you can do about this.
+
+ 
+
+WaitForSecond should really be called WaitForMinimumSeconds.
+
+ 
+
+There are a couple of way to solve this:
+
+ 
+
+Implement your own timer, it will be a bit more precise but if the frame-rate is low enough you will still over-shoot your mark with a few ms
+
+Add a check to the animation and don't start it if it's already running, use some sort of "animation queue" which you de-queque things of once the current animation is playing
+
+```
+
+ 
+
+@Src https://forum.unity.com/threads/coroutine-waitforsecond-is-fps-dependant.102222/
+
+### Solution
+
+```ts
+// https://stackoverflow.com/questions/3969475/javascript-pause-settimeout
+export class Timer {
+  private timerId: number;
+  private start: number;
+  private remaining: number;
+  private callback: any;
+
+  constructor(callback: any, delay: number) {
+    this.callback = callback;
+    this.timerId = delay;
+    this.start = delay;
+    this.remaining = delay;
+    this.resume();
+  }
+
+  public pause () {
+    window.clearTimeout(this.timerId);
+    this.remaining -= Date.now() - this.start;
+  }
+
+  public resume() {
+    this.start = Date.now();
+    window.clearTimeout(this.timerId);
+    this.timerId = window.setTimeout(this.callback, this.remaining);
+  };
+  
+  public stop() {
+    window.clearTimeout(this.timerId);
+  }
+}
+```
+We could probably do the same for setInterval (but I am too lazy to code it right now).
+
+For correction I encourage you to `git diff` between this commit and the previous one.
+
+If are attentive, you will see that the obstacle still travel a bit further after you go back on the tab, I believe this has something to do with the
+deltaTime being incorrect or the requestAnimationFrame being executed. By explicitly stopping the pixi Timer, the obstacle does seem to move less between tab change.
+
+
+```ts
+window.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    app.ticker.stop();
+    obstacleSpawnInterval.pause();
+  } else if (!document.hidden && obstacleSpawnInterval.paused){
+    app.ticker.start();
+    obstacleSpawnInterval.resume();
+  } else {
+    // it should never be hidden and unpaused, and never be visible and paused.
+    console.error('unexpected case');
+  }
+});
+```
 
 
 ## 16. Add a special feature
@@ -1551,22 +1728,10 @@ Lastly, I encourage you, if you haven't yet, to add a feature of your own creati
 ## TEMP
 
 Add a link to finished game on the top. Teaser.
-Add a encouragment to adapt the game to your style, value, small thing more, different sprite...
+Add a encouragment at the top, to adapt the game to your style, value, small thing more, different sprite...
 
-```ts
-type radian = number;
-
-function makeRock(position: Point, direction: radian): Sprite {
-  const rock = PIXI.Sprite.from(rockImg);
-  rock.position = position;
-  rock.rotation = direction;
-  return rock;
-}
-
-const newRock = makeRock(new Point(app.renderer.width/2, app.renderer.height/2), 0);
-app.stage.addChild(newRock);
-```
 
 ## trop complexe
+matrix and hitboxes
 
 @See `git checkout hitboxes-are-complex`

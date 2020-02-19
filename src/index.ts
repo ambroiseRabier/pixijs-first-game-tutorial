@@ -1,9 +1,10 @@
 import './index.html';
-import {Application, Point, Sprite, Circle, Text, TextStyle, Rectangle} from 'pixi.js';
+import {Application, Circle, Point, Rectangle, Sprite, Text, TextStyle} from 'pixi.js';
 import spaceshipPng from './spaceship.png';
 import {Obstacle} from './obstacle';
 import {HitboxVisualizer} from './simple-global-hitbox-visualizer';
 import {circCirc, rectRect} from './collision';
+import {Timer} from './timer';
 
 
 // The application will create a renderer using WebGL, if possible,
@@ -56,7 +57,7 @@ app.stage.addChild(scoreText);
 
 
 let playerSpeed = new Point();
-const playerSpeedMultiplier = 5;
+const playerSpeedMultiplier = 8;
 
 const keysPressed: {[key: string]: number}  = {
   'ArrowUp': 0,
@@ -72,16 +73,16 @@ app.ticker.add(() => {
       keysPressed['ArrowRight'] - keysPressed['ArrowLeft'],
       keysPressed['ArrowDown'] - keysPressed['ArrowUp']
   );
-  // each frame we spin the bunny around a bit
-  player.position.x += playerSpeed.x * playerSpeedMultiplier;
-  player.position.y += playerSpeed.y * playerSpeedMultiplier;
+
+  player.position.x += playerSpeed.x * playerSpeedMultiplier * app.ticker.deltaTime;
+  player.position.y += playerSpeed.y * playerSpeedMultiplier * app.ticker.deltaTime;
 
   visualizer.displayOnce(playerHitbox());
 
   for (let index in allObstacles) {
     const obstacle = allObstacles[index];
 
-    obstacle.update();
+    obstacle.update(app.ticker.deltaTime);
     visualizer.displayOnce(obstacleHitbox(obstacle));
 
     if (circCirc(playerHitbox(), obstacleHitbox(obstacle))) {
@@ -111,13 +112,25 @@ app.ticker.add(() => {
   }
 });
 
-
 window.addEventListener('keydown', (event: KeyboardEvent) => {
   keysPressed[event.key] = 1;
 });
 
 window.addEventListener('keyup', (event: KeyboardEvent) => {
   keysPressed[event.key] = 0;
+});
+
+window.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    app.ticker.stop();
+    obstacleSpawnInterval.pause();
+  } else if (!document.hidden && obstacleSpawnInterval.paused){
+    app.ticker.start();
+    obstacleSpawnInterval.resume();
+  } else {
+    // it should never be hidden and unpaused, and never be visible and paused.
+    console.error('unexpected case');
+  }
 });
 
 function restart() {
@@ -134,7 +147,7 @@ function restart() {
   player.position = playerStartPos;
 
   // stop then restart the interval
-  clearInterval(obstacleSpawnInterval);
+  obstacleSpawnInterval.stop();
   obstacleSpawnInterval = startObstacleSpawn();
 
   // reset score
@@ -167,21 +180,23 @@ function getObstacleSpawnPoint(): Point {
 
 let obstacleSpawnInterval = startObstacleSpawn();
 
-function startObstacleSpawn(): number {
-  // setInterval return a number, but somehow, our IDE think it is NodeJS environment and not Browser env.
-  // So we workaround the type system by casting to any.
-  return setInterval(() => {
-    const obstacle = new Obstacle();
-    const randomPos = getObstacleSpawnPoint();
+function spawnObstacle() {
+  const obstacle = new Obstacle();
+  const randomPos = getObstacleSpawnPoint();
 
-    obstacle.transform.position = randomPos;
-    obstacle.init(player.position);
-    app.stage.addChild(obstacle.transform);
-    allObstacles.push(obstacle);
-    scoreText.text = (parseInt(scoreText.text) + 1) + '';
-  }, 1000) as any;
+  obstacle.transform.position = randomPos;
+  obstacle.init(player.position);
+  app.stage.addChild(obstacle.transform);
+  allObstacles.push(obstacle);
+  scoreText.text = (parseInt(scoreText.text) + 1) + '';
+  obstacleSpawnInterval = startObstacleSpawn()
 }
 
+function startObstacleSpawn(): Timer {
+  // setInterval return a number, but somehow, our IDE think it is NodeJS environment and not Browser env.
+  // So we workaround the type system by casting to any.
+  return new Timer(spawnObstacle, 1000);
+}
 
 
 
