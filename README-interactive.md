@@ -1710,7 +1710,7 @@ window.addEventListener('visibilitychange', () => {
 ```
 
 
-## 16. Add a special feature
+## 16. Add your feature
 
 Lastly, I encourage you, if you haven't yet, to add a feature of your own creativity to your game. Creativity often come faster when you have constraints, the game in itself you have build is a constraint, your new feature should goes well along what you have already build. And it should not be too complex.
 
@@ -1724,6 +1724,7 @@ Lastly, I encourage you, if you haven't yet, to add a feature of your own creati
   - Make the restart only when player press space. Add a text saying it.
 </details>
 
+Do not forget to remove/hide the red dot on the player and obstacle if you haven't yet.
 
 ## TEMP
 
